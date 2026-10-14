@@ -1,0 +1,1329 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KodBursa | Bilgisayarsız Kodlama – Bursa İl MEM Yenilik ve Eğitim Teknolojileri Hizmetleri Şubesi</title>
+<meta name="description" content="Bursa İl Milli Eğitim Müdürlüğü Yenilik ve Eğitim Teknolojileri Hizmetleri Şubesi tarafından hazırlanan, Bursa temalı ücretsiz bilgisayarsız kodlama etkinlikleri.">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          bursa: { green:'#0E7C66', dark:'#0B3B36', mint:'#5EEAD4', tile:'#1E6FA8', chestnut:'#8B4A2B', gold:'#E9A23B', cream:'#FFF8EC' }
+        },
+        fontFamily: { sans: ['Nunito','Segoe UI','system-ui','sans-serif'], display: ['Baloo 2','Nunito','sans-serif'] }
+      }
+    }
+  };
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  html{scroll-behavior:smooth}
+  body{background:#F6FBF9;color:#12302C}
+  .page{animation:fadeIn .35s ease}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+  @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+  @keyframes blink{0%,92%,100%{transform:scaleY(1)}96%{transform:scaleY(.1)}}
+  .kodbot{animation:float 3.5s ease-in-out infinite}
+  .kodbot .eye{transform-origin:center;transform-box:fill-box;animation:blink 4s infinite}
+  .card{background:#fff;border-radius:1.25rem;box-shadow:0 6px 24px -10px rgba(11,59,54,.18);border:1px solid #E3F1EC}
+  .chip{display:inline-flex;align-items:center;gap:.35rem;padding:.2rem .7rem;border-radius:999px;font-size:.78rem;font-weight:700}
+  .nav-link{padding:.5rem .85rem;border-radius:.75rem;font-weight:700;color:#0B3B36;transition:.2s;white-space:nowrap}
+  .nav-link:hover{background:#E6F5F0}
+  .nav-link.active{background:#0E7C66;color:#fff}
+  .code{font-family:Consolas,'Courier New',monospace;background:#0B3B36;color:#D1FAE5;border-radius:.9rem;padding:1rem 1.2rem;font-size:.92rem;line-height:1.7;white-space:pre-wrap;overflow-x:auto}
+  .code .k{color:#FCD34D;font-weight:700}
+  .code .c{color:#7DD3C0;font-style:italic}
+  .tile-bg{background-color:#0B3B36;background-image:radial-gradient(circle at 25% 25%,rgba(94,234,212,.18) 0 12%,transparent 13%),radial-gradient(circle at 75% 75%,rgba(233,162,59,.18) 0 12%,transparent 13%);background-size:48px 48px}
+  .gcell{aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;border-radius:.5rem;font-size:1.35rem;background:#ECFDF5;border:1px solid #CDEDE3;transition:background .2s}
+  .gcell.wall{background:#D6CFC4;border-color:#BDB3A5}
+  .gcell.goal{background:#FEF3C7;border-color:#F5D27A}
+  .gcell.trail{background:#CCFBF1}
+  .bcard{width:72px;height:100px;border-radius:.8rem;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:transform .35s, background .35s;border:2px solid #0E7C66;user-select:none}
+  .bcard.on{background:#fff}
+  .bcard.off{background:#0B3B36;color:#0B3B36}
+  .bcard .dots{display:flex;flex-wrap:wrap;justify-content:center;gap:3px;max-width:56px}
+  .bcard .dot{width:8px;height:8px;border-radius:50%;background:#E9A23B}
+  .sudoku{display:grid;grid-template-columns:repeat(4,1fr);max-width:300px;margin:auto;border:3px solid #1E6FA8;border-radius:.6rem;overflow:hidden}
+  .sudoku div{aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;font-size:1.8rem;border:1px solid #BFDBFE;cursor:pointer;background:#fff;user-select:none}
+  .sudoku div.given{background:#DBEAFE;cursor:default}
+  .sudoku div.bad{background:#FEE2E2}
+  .sudoku div.ok{background:#DCFCE7}
+  .sudoku div:nth-child(4n+2){border-right:3px solid #1E6FA8}
+  .sudoku div:nth-child(n+5):nth-child(-n+8){border-bottom:3px solid #1E6FA8}
+  .cut{border:2px dashed #94A3B8;border-radius:.6rem}
+  .print-only{display:none}
+  table.rubric th, table.rubric td{border:1px solid #CDEDE3;padding:.45rem .6rem;font-size:.88rem}
+  table.rubric th{background:#E6F5F0}
+  .scroll-x{overflow-x:auto}
+  @media print{
+    @page{size:A4;margin:13mm}
+    body{background:#fff!important;font-size:11.5pt}
+    header,footer,.no-print,#mobileMenu{display:none!important}
+    .page{display:none!important;animation:none!important}
+    #page-detay{display:block!important}
+    .print-only{display:block!important}
+    .card{box-shadow:none!important;border:1px solid #CBD5E1!important}
+    .avoid-break{break-inside:avoid;page-break-inside:avoid}
+    .page-break{break-before:page;page-break-before:always}
+    main{padding:0!important;max-width:none!important}
+    *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  }
+</style>
+</head>
+<body class="font-sans antialiased">
+
+<!-- ================= ÜST ANTET + MENÜ ================= -->
+<header class="sticky top-0 z-40 bg-white/90 backdrop-blur border-b border-emerald-100">
+  <div class="bg-bursa-dark text-emerald-50 text-[11px] sm:text-xs">
+    <div class="max-w-7xl mx-auto px-4 py-1.5 flex justify-between gap-2">
+      <span>T.C. Bursa Valiliği · Bursa İl Milli Eğitim Müdürlüğü</span>
+      <span class="hidden sm:inline">Yenilik ve Eğitim Teknolojileri Hizmetleri Şubesi</span>
+    </div>
+  </div>
+  <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-3">
+    <a href="#/ana" class="flex items-center gap-3 min-w-0">
+      <!-- LOGO ALANI: Resmî logo kullanılacaksa bu SVG yerine <img src="logo.png"> koyabilirsiniz -->
+      <div class="shrink-0 w-12 h-12 rounded-2xl bg-bursa-green grid place-items-center shadow-md" aria-label="Kurum logosu alanı">
+        <svg viewBox="0 0 48 48" class="w-9 h-9"><circle cx="24" cy="24" r="21" fill="none" stroke="#E9A23B" stroke-width="2.5"/><path d="M12 30 L24 14 L36 30 Z" fill="#5EEAD4"/><path d="M18 30 L24 22 L30 30 Z" fill="#fff"/><rect x="11" y="31" width="26" height="3" rx="1.5" fill="#E9A23B"/><circle cx="24" cy="11" r="2" fill="#fff"/></svg>
+      </div>
+      <div class="leading-tight min-w-0">
+        <div class="font-display font-extrabold text-xl text-bursa-dark">Kod<span class="text-bursa-green">Bursa</span></div>
+        <div class="text-[11px] sm:text-xs text-slate-500 truncate">Bilgisayarsız Kodlama Platformu</div>
+      </div>
+    </a>
+    <nav class="hidden lg:flex items-center gap-1 text-sm" id="desktopNav">
+      <a class="nav-link" data-nav="ana" href="#/ana">Anasayfa</a>
+      <a class="nav-link" data-nav="algoritma" href="#/algoritma">Algoritma Nedir?</a>
+      <a class="nav-link" data-nav="ozellikler" href="#/ozellikler">Özellikler</a>
+      <a class="nav-link" data-nav="yapilar" href="#/yapilar">Temel Yapılar</a>
+      <a class="nav-link" data-nav="akis" href="#/akis">Akış Diyagramları</a>
+      <a class="nav-link" data-nav="etkinlikler" href="#/etkinlikler">Etkinlikler</a>
+    </nav>
+    <button id="menuBtn" class="lg:hidden p-2 rounded-xl bg-emerald-50 text-bursa-dark" aria-label="Menüyü aç">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+    </button>
+  </div>
+  <nav id="mobileMenu" class="hidden lg:hidden border-t border-emerald-100 px-4 py-3 grid grid-cols-2 gap-2 text-sm bg-white">
+    <a class="nav-link" data-nav="ana" href="#/ana">🏠 Anasayfa</a>
+    <a class="nav-link" data-nav="algoritma" href="#/algoritma">📜 Algoritma Nedir?</a>
+    <a class="nav-link" data-nav="ozellikler" href="#/ozellikler">✅ Özellikler</a>
+    <a class="nav-link" data-nav="yapilar" href="#/yapilar">🧩 Temel Yapılar</a>
+    <a class="nav-link" data-nav="akis" href="#/akis">🔷 Akış Diyagramları</a>
+    <a class="nav-link" data-nav="etkinlikler" href="#/etkinlikler">🎲 Etkinlikler</a>
+  </nav>
+</header>
+
+<main class="max-w-7xl mx-auto px-4 py-8">
+
+<!-- ================= ANASAYFA ================= -->
+<section id="page-ana" class="page">
+  <!-- Hero -->
+  <div class="tile-bg rounded-[2rem] overflow-hidden text-white relative">
+    <div class="grid md:grid-cols-2 gap-6 items-center p-6 sm:p-10 lg:p-14">
+      <div>
+        <span class="chip bg-bursa-gold text-bursa-dark">🌰 Ücretsiz · Kurulum Gerektirmez · Bursa Temalı</span>
+        <h1 class="font-display font-extrabold text-4xl sm:text-5xl lg:text-6xl mt-4 leading-[1.05]">Bilgisayarsız <span class="text-bursa-mint">Kodlama</span> ile Bursa'yı Keşfet!</h1>
+        <p class="mt-4 text-emerald-50/90 text-lg max-w-xl">Ulu Cami'nin kubbelerinden Tophane Saat Kulesi'ne, Koza Han'ın avlusundan Uludağ'ın zirvesine… Kalem, kâğıt ve biraz merakla algoritmik düşünmeyi öğreniyoruz.</p>
+        <div class="mt-6 flex flex-wrap gap-3">
+          <a href="#/etkinlikler" class="px-6 py-3 rounded-2xl bg-bursa-gold text-bursa-dark font-extrabold shadow-lg hover:scale-105 transition">🎲 Etkinliklere Başla</a>
+          <a href="#/algoritma" class="px-6 py-3 rounded-2xl bg-white/10 border border-white/30 font-bold hover:bg-white/20 transition">📜 Algoritma Nedir?</a>
+        </div>
+        <p class="mt-6 text-xs text-emerald-100/80">Hazırlayan: Bursa İl Milli Eğitim Müdürlüğü · Yenilik ve Eğitim Teknolojileri Hizmetleri Şubesi</p>
+      </div>
+      <div class="flex flex-col items-center">
+        <div id="kodbotBubble" class="relative bg-white text-bursa-dark rounded-3xl px-5 py-4 shadow-xl max-w-xs text-center font-bold mb-2 cursor-pointer select-none">
+          <span id="kodbotText">Merhaba! Ben <b class="text-bursa-green">KodBot</b>. Bursa'da kodlama macerasına hazır mısın? 🤖</span>
+          <div class="absolute left-1/2 -bottom-3 w-6 h-6 bg-white rotate-45 -translate-x-1/2"></div>
+        </div>
+        <div id="kodbotHero" class="w-56 sm:w-64 cursor-pointer" title="KodBot'a tıkla!"></div>
+        <span class="text-xs text-emerald-100/70 mt-1">KodBot'a tıkla, sana bir şey söylesin!</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Kimler için -->
+  <div class="grid sm:grid-cols-3 gap-4 mt-8">
+    <div class="card p-5"><div class="text-3xl">👩‍🏫</div><h3 class="font-display font-bold text-xl mt-2">Öğretmenler İçin</h3><p class="text-sm text-slate-600 mt-1">Kazanım, süre, malzeme, adım adım uygulama ve değerlendirme rubriğiyle sınıfa hazır etkinlik planları. Tek tıkla A4 PDF.</p></div>
+    <div class="card p-5"><div class="text-3xl">🧒</div><h3 class="font-display font-bold text-xl mt-2">Öğrenciler İçin</h3><p class="text-sm text-slate-600 mt-1">Oyunlaştırılmış görevler, KodBot ile rota oyunları, şifre çözme ve çini desenli bulmacalar.</p></div>
+    <div class="card p-5"><div class="text-3xl">👨‍👩‍👧</div><h3 class="font-display font-bold text-xl mt-2">Ebeveynler İçin</h3><p class="text-sm text-slate-600 mt-1">Evde, mutfakta, Bursa gezilerinde uygulanabilecek; ekran süresi gerektirmeyen keyifli düşünme oyunları.</p></div>
+  </div>
+
+  <!-- Bilgisayarsız kodlama nedir -->
+  <div class="grid lg:grid-cols-5 gap-6 mt-10 items-center">
+    <div class="lg:col-span-2">
+      <span class="chip bg-emerald-100 text-bursa-green">Temel Kavram</span>
+      <h2 class="font-display font-extrabold text-3xl mt-2 text-bursa-dark">Bilgisayarsız Kodlama Nedir?</h2>
+      <p class="mt-3 text-slate-700">Bilgisayarsız kodlama (<i>unplugged coding</i>), bilgisayar bilimi kavramlarının kartlar, oyunlar, hareket ve gündelik yaşam senaryolarıyla <b>hiçbir dijital araç kullanmadan</b> öğretilmesidir. Amaç kod ezberlemek değil, bir problemi bilgisayar bilimcisi gibi <b>düşünebilmektir</b>.</p>
+      <p class="mt-3 text-slate-700">Bu düşünme biçimine <b>Bilgi İşlemsel Düşünme</b> denir ve dört temel beceriye dayanır. Aşağıda her birini Bursa'dan örneklerle bulabilirsiniz.</p>
+    </div>
+    <div class="lg:col-span-3 grid sm:grid-cols-2 gap-4" id="bidCards"></div>
+  </div>
+
+  <!-- Etkinlik önizleme -->
+  <div class="mt-12">
+    <div class="flex items-end justify-between gap-4 flex-wrap">
+      <div>
+        <span class="chip bg-amber-100 text-bursa-chestnut">7 Etkinlik · PDF olarak indirilebilir</span>
+        <h2 class="font-display font-extrabold text-3xl mt-2 text-bursa-dark">Bursa Etkinlikleri</h2>
+      </div>
+      <a href="#/etkinlikler" class="font-bold text-bursa-green hover:underline">Tümünü gör →</a>
+    </div>
+    <div id="homeActivities" class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-4"></div>
+  </div>
+
+  <!-- Öğrenme yolu -->
+  <div class="card p-6 sm:p-8 mt-12">
+    <h2 class="font-display font-extrabold text-2xl text-bursa-dark">🗺️ Önerilen Öğrenme Yolu</h2>
+    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-5 text-sm">
+      <a href="#/algoritma" class="rounded-2xl p-4 bg-emerald-50 hover:bg-emerald-100 transition"><b class="text-bursa-green">1. Adım</b><br>Algoritma kavramı ve El-Harezmi</a>
+      <a href="#/ozellikler" class="rounded-2xl p-4 bg-sky-50 hover:bg-sky-100 transition"><b class="text-bursa-tile">2. Adım</b><br>İyi bir algoritmanın özellikleri</a>
+      <a href="#/yapilar" class="rounded-2xl p-4 bg-amber-50 hover:bg-amber-100 transition"><b class="text-bursa-chestnut">3. Adım</b><br>Sıralı, koşullu ve döngüsel yapılar</a>
+      <a href="#/etkinlikler" class="rounded-2xl p-4 bg-rose-50 hover:bg-rose-100 transition"><b class="text-rose-700">4. Adım</b><br>Bursa etkinlikleriyle uygulama</a>
+    </div>
+  </div>
+</section>
+
+<!-- ================= ALGORİTMA NEDİR ================= -->
+<section id="page-algoritma" class="page hidden">
+  <div class="max-w-4xl mx-auto">
+    <span class="chip bg-emerald-100 text-bursa-green">Teorik Altyapı · 1</span>
+    <h1 class="font-display font-extrabold text-4xl mt-2 text-bursa-dark">Algoritma Nedir?</h1>
+    <p class="mt-4 text-lg text-slate-700"><b>Algoritma</b>, bir problemi çözmek ya da bir işi yapmak için izlenmesi gereken, <b>sırası belli, açık ve sonlu adımlar</b> dizisidir. Bilgisayar programları algoritmaların bir programlama diliyle yazılmış hâlidir; ama algoritmalar bilgisayardan çok daha eskidir!</p>
+
+    <div class="grid md:grid-cols-2 gap-5 mt-8">
+      <div class="card p-6">
+        <div class="text-4xl">📚</div>
+        <h2 class="font-display font-bold text-2xl mt-2">El-Harezmi ve Kelimenin Kökeni</h2>
+        <p class="mt-2 text-slate-700 text-sm leading-relaxed">"Algoritma" kelimesi, 9. yüzyılda Bağdat'taki <b>Beytü'l-Hikme</b> (Bilgelik Evi) bilim merkezinde çalışan matematikçi <b>Muhammed bin Musa el-Harezmi</b>'nin (yaklaşık 780–850) adından gelir. El-Harezmi'nin hesaplama yöntemlerini anlatan eserleri Latinceye çevrildiğinde adı <i>"Algoritmi"</i> olarak yazılmış; zamanla bu sözcük "adım adım hesaplama yöntemi" anlamını kazanmıştır.</p>
+        <p class="mt-2 text-slate-700 text-sm leading-relaxed">El-Harezmi'nin <i>el-Kitâbü'l-muhtasar fî hisâbi'l-cebr ve'l-mukâbele</i> adlı eseri ise matematiğin <b>cebir</b> (algebra) dalına adını vermiştir. Hint-Arap rakamlarının ve sıfırın Avrupa'ya yayılmasında da büyük rolü olmuştur.</p>
+      </div>
+      <div class="card p-6 bg-gradient-to-br from-amber-50 to-white">
+        <div class="text-4xl">🍞</div>
+        <h2 class="font-display font-bold text-2xl mt-2">Bursa'dan Bir Algoritma</h2>
+        <p class="mt-2 text-slate-700 text-sm">Bir Bursa kahvaltısında <b>tahinli pide</b> yapmak da bir algoritmadır:</p>
+        <div class="code mt-3"><span class="k">BAŞLA</span>
+1. Ellerini yıka
+2. Hamuru aç
+3. Tahin ve şekeri karıştırıp hamura sür
+4. Hamuru rulo yap ve spiral şeklinde kıvır
+5. Fırında pişir
+6. Servis et
+<span class="k">BİTİR</span></div>
+        <p class="mt-3 text-xs text-slate-500">Adımların sırası değişirse (örneğin "pişir" adımı en başa gelirse) sonuç da değişir!</p>
+      </div>
+    </div>
+
+    <div class="card p-6 mt-6">
+      <h2 class="font-display font-bold text-2xl">⏳ Kısa Zaman Çizelgesi</h2>
+      <ol class="relative border-l-4 border-emerald-200 ml-3 mt-4 space-y-5">
+        <li class="ml-6"><span class="absolute -left-[13px] w-5 h-5 rounded-full bg-bursa-green"></span><b>MÖ ~1600 – Babil:</b> Kil tabletlere yazılmış adım adım hesaplama yöntemleri.</li>
+        <li class="ml-6"><span class="absolute -left-[13px] w-5 h-5 rounded-full bg-bursa-green"></span><b>MÖ ~300 – Öklid:</b> İki sayının en büyük ortak bölenini bulan ünlü Öklid algoritması.</li>
+        <li class="ml-6"><span class="absolute -left-[13px] w-5 h-5 rounded-full bg-bursa-gold"></span><b>9. yüzyıl – El-Harezmi:</b> Sistemli hesaplama yöntemleri; "algoritma" ve "cebir" kelimelerinin kaynağı.</li>
+        <li class="ml-6"><span class="absolute -left-[13px] w-5 h-5 rounded-full bg-bursa-green"></span><b>1843 – Ada Lovelace:</b> Bir makine için yazılmış ilk algoritma kabul edilen notlar.</li>
+        <li class="ml-6"><span class="absolute -left-[13px] w-5 h-5 rounded-full bg-bursa-green"></span><b>1936 – Alan Turing:</b> Hesaplanabilirlik ve "Turing makinesi" kavramı.</li>
+        <li class="ml-6"><span class="absolute -left-[13px] w-5 h-5 rounded-full bg-bursa-tile"></span><b>Bugün:</b> Navigasyon uygulamalarından teleferik bilet sistemlerine her yerde algoritmalar var.</li>
+      </ol>
+    </div>
+
+    <div class="card p-6 mt-6 flex flex-col sm:flex-row gap-5 items-center">
+      <div class="w-28 shrink-0 kodbot-mini"></div>
+      <div>
+        <h3 class="font-display font-bold text-xl">KodBot Soruyor 🤔</h3>
+        <p class="text-slate-700 text-sm mt-1">Sabah okula gelirken izlediğin yol bir algoritma mı? Evden çıkıp Tophane Saat Kulesi'ne giden bir arkadaşına yol tarif ettiğini düşün. Tarifin <b>açık</b>, <b>sıralı</b> ve <b>sonlu</b> mu?</p>
+      </div>
+    </div>
+    <div class="mt-8 flex justify-between"><a href="#/ana" class="font-bold text-slate-500">← Anasayfa</a><a href="#/ozellikler" class="font-bold text-bursa-green">Algoritmanın Özellikleri →</a></div>
+  </div>
+</section>
+
+<!-- ================= ÖZELLİKLER ================= -->
+<section id="page-ozellikler" class="page hidden">
+  <div class="max-w-5xl mx-auto">
+    <span class="chip bg-sky-100 text-bursa-tile">Teorik Altyapı · 2</span>
+    <h1 class="font-display font-extrabold text-4xl mt-2 text-bursa-dark">Algoritmanın Temel Özellikleri</h1>
+    <p class="mt-3 text-lg text-slate-700">Her adım listesi iyi bir algoritma değildir. İyi bir algoritma aşağıdaki özellikleri taşımalıdır. Kartların üzerine tıklayarak Bursa örneklerini görebilirsiniz.</p>
+    <div id="featureCards" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-6"></div>
+
+    <div class="card p-6 mt-8">
+      <h2 class="font-display font-bold text-2xl">🕵️ Hangisi İyi Bir Algoritma?</h2>
+      <p class="text-sm text-slate-600 mt-1">KodBot, Uludağ teleferiğine binmek için iki farklı talimat aldı. Hangisi daha iyi?</p>
+      <div class="grid md:grid-cols-2 gap-4 mt-4">
+        <div class="rounded-2xl border-2 border-rose-200 p-4 bg-rose-50">
+          <b class="text-rose-700">Talimat A</b>
+          <div class="code mt-2 !bg-rose-900">1. Teleferiğe git
+2. Biraz bekle
+3. Bin
+4. Gerekirse tekrar bekle...</div>
+          <p class="text-xs mt-2 text-rose-800">❌ "Biraz", "gerekirse" belirsiz; nerede biteceği belli değil.</p>
+        </div>
+        <div class="rounded-2xl border-2 border-emerald-200 p-4 bg-emerald-50">
+          <b class="text-emerald-700">Talimat B</b>
+          <div class="code mt-2">1. Teferrüç İstasyonu'na git
+2. Bilet al
+3. Sıraya gir
+4. Kabin kapısı açılınca kabine bin
+5. Sarıalan'da kabinden in</div>
+          <p class="text-xs mt-2 text-emerald-800">✅ Açık, sıralı, girdi-çıktısı belli ve sonlu.</p>
+        </div>
+      </div>
+    </div>
+    <div class="mt-8 flex justify-between"><a href="#/algoritma" class="font-bold text-slate-500">← Algoritma Nedir?</a><a href="#/yapilar" class="font-bold text-bursa-green">Temel Yapılar →</a></div>
+  </div>
+</section>
+
+<!-- ================= TEMEL YAPILAR ================= -->
+<section id="page-yapilar" class="page hidden">
+  <div class="max-w-5xl mx-auto">
+    <span class="chip bg-amber-100 text-bursa-chestnut">Teorik Altyapı · 3</span>
+    <h1 class="font-display font-extrabold text-4xl mt-2 text-bursa-dark">Temel Algoritma Yapıları</h1>
+    <p class="mt-3 text-lg text-slate-700">Tüm programlar üç temel yapının birleşiminden oluşur: <b>sıralı</b>, <b>koşullu</b> ve <b>döngüsel</b> yapılar.</p>
+
+    <div class="flex flex-wrap gap-2 mt-6 no-print" id="structTabs">
+      <button data-tab="sirali" class="struct-tab px-4 py-2 rounded-xl font-bold">➡️ Sıralı Yapı</button>
+      <button data-tab="kosullu" class="struct-tab px-4 py-2 rounded-xl font-bold">🔀 Koşullu Yapı (If-Else)</button>
+      <button data-tab="dongu" class="struct-tab px-4 py-2 rounded-xl font-bold">🔁 Döngüsel Yapı</button>
+    </div>
+
+    <div class="struct-panel card p-6 mt-4" data-panel="sirali">
+      <h2 class="font-display font-bold text-2xl">➡️ Sıralı Yapılar</h2>
+      <p class="mt-2 text-slate-700">Adımlar yukarıdan aşağıya, <b>yazıldığı sırayla ve her biri bir kez</b> çalıştırılır. Sıra değişirse sonuç bozulabilir.</p>
+      <div class="grid md:grid-cols-2 gap-4 mt-4">
+        <div class="code"><span class="c">// Koza Han'dan ipek eşarp almak</span>
+<span class="k">BAŞLA</span>
+1. Koza Han'ın kapısından gir
+2. Avludaki dükkânlara bak
+3. Beğendiğin eşarbı seç
+4. Ödemeyi yap
+5. Eşarbı paketlet
+<span class="k">BİTİR</span></div>
+        <div class="rounded-2xl bg-emerald-50 p-4 text-sm text-slate-700">
+          <b>Sınıfta deneyin:</b> Öğrencilerden kartları karıştırıp yeniden sıralamalarını isteyin. "Ödemeyi yap" adımı, "eşarbı seç" adımından önce gelirse ne olur? Bu tartışma sıranın önemini kavratır.
+        </div>
+      </div>
+    </div>
+
+    <div class="struct-panel card p-6 mt-4 hidden" data-panel="kosullu">
+      <h2 class="font-display font-bold text-2xl">🔀 Koşullu Yapılar (EĞER – İSE – DEĞİLSE)</h2>
+      <p class="mt-2 text-slate-700">Bir <b>koşulun doğru ya da yanlış</b> olmasına göre farklı adımlar çalıştırılır. Programlama dillerinde <code class="bg-slate-100 px-1 rounded">if – else</code> olarak yazılır.</p>
+      <div class="grid md:grid-cols-2 gap-4 mt-4">
+        <div class="code"><span class="c">// Uludağ'a çıkmadan önce</span>
+<span class="k">EĞER</span> Uludağ'da kar yağıyorsa <span class="k">İSE</span>
+    Kayak takımını al
+<span class="k">DEĞİLSE</span>
+    Yürüyüş ayakkabısını giy
+<span class="k">SON</span></div>
+        <div class="rounded-2xl bg-sky-50 p-4 no-print">
+          <b class="text-sm">Dene: Hava nasıl?</b>
+          <div class="flex gap-2 mt-2">
+            <button class="ifdemo px-3 py-2 rounded-xl bg-white border font-bold" data-v="kar">❄️ Karlı</button>
+            <button class="ifdemo px-3 py-2 rounded-xl bg-white border font-bold" data-v="gunes">☀️ Güneşli</button>
+          </div>
+          <p id="ifdemoOut" class="mt-3 font-bold text-bursa-tile text-sm">Bir hava durumu seç…</p>
+        </div>
+      </div>
+      <p class="mt-4 text-sm text-slate-600"><b>İç içe koşullar:</b> EĞER kar yağıyorsa İSE (EĞER sıcaklık -10°C'den düşükse İSE kalın eldiven de al).</p>
+    </div>
+
+    <div class="struct-panel card p-6 mt-4 hidden" data-panel="dongu">
+      <h2 class="font-display font-bold text-2xl">🔁 Döngüsel Yapılar (TEKRARLA)</h2>
+      <p class="mt-2 text-slate-700">Aynı adımlar <b>belirli sayıda</b> ya da <b>bir koşul sağlanana kadar</b> tekrar edilir. Döngüler uzun talimatları kısaltır.</p>
+      <div class="grid md:grid-cols-2 gap-4 mt-4">
+        <div class="code"><span class="c">// Döngüsüz: Ulu Cami'nin kubbelerini saymak</span>
+Kubbeye bak, 1 say
+Kubbeye bak, 1 say
+Kubbeye bak, 1 say
+... (20 kez!)
+
+<span class="c">// Döngülü</span>
+<span class="k">TEKRARLA</span> 20 KEZ
+    Kubbeye bak, 1 say
+<span class="k">SON</span></div>
+        <div class="code"><span class="c">// Koşullu döngü: Tophane yokuşu</span>
+<span class="k">TEKRARLA</span> Saat Kulesi'ne ulaşana kadar
+    Bir basamak çık
+<span class="k">SON</span>
+Kuleyi fotoğrafla 📸
+
+<span class="c">// İç içe döngü: 4 sıra × 5 kubbe = 20</span>
+<span class="k">TEKRARLA</span> 4 KEZ
+    <span class="k">TEKRARLA</span> 5 KEZ
+        Kubbe çiz
+    <span class="k">SON</span>
+    Alt satıra geç
+<span class="k">SON</span></div>
+      </div>
+    </div>
+    <div class="mt-8 flex justify-between"><a href="#/ozellikler" class="font-bold text-slate-500">← Özellikler</a><a href="#/akis" class="font-bold text-bursa-green">Akış Diyagramları →</a></div>
+  </div>
+</section>
+
+<!-- ================= AKIŞ DİYAGRAMLARI ================= -->
+<section id="page-akis" class="page hidden">
+  <div class="max-w-5xl mx-auto">
+    <span class="chip bg-rose-100 text-rose-700">Teorik Altyapı · 4</span>
+    <h1 class="font-display font-extrabold text-4xl mt-2 text-bursa-dark">Akış Diyagramları</h1>
+    <p class="mt-3 text-lg text-slate-700">Akış diyagramı, bir algoritmanın adımlarını <b>standart şekiller ve oklarla</b> görsel olarak gösterir. Böylece algoritma herkes tarafından aynı şekilde okunabilir.</p>
+    <div id="symbolCards" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-6"></div>
+
+    <div class="card p-6 mt-8">
+      <h2 class="font-display font-bold text-2xl">🏔️ Örnek: Uludağ Gezisine Hazırlık</h2>
+      <div class="grid lg:grid-cols-2 gap-6 mt-4 items-center">
+        <div class="scroll-x">
+        <svg viewBox="0 0 380 560" class="w-full max-w-sm mx-auto" font-family="Nunito, sans-serif" font-size="13" font-weight="700">
+          <defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#0B3B36"/></marker></defs>
+          <g stroke="#0B3B36" stroke-width="2" fill="none" marker-end="url(#ar)">
+            <line x1="190" y1="56" x2="190" y2="88"/><line x1="190" y1="136" x2="190" y2="168"/>
+            <line x1="190" y1="256" x2="190" y2="300"/>
+            <polyline points="104,212 60,212 60,320"/><polyline points="276,212 320,212 320,320"/>
+            <polyline points="60,368 60,410 150,410"/><polyline points="320,368 320,410 230,410"/>
+            <line x1="190" y1="434" x2="190" y2="470"/>
+          </g>
+          <ellipse cx="190" cy="34" rx="70" ry="22" fill="#D1FAE5" stroke="#0E7C66" stroke-width="2"/><text x="190" y="39" text-anchor="middle">BAŞLA</text>
+          <polygon points="110,90 290,90 270,134 90,134" fill="#E0F2FE" stroke="#1E6FA8" stroke-width="2"/><text x="190" y="117" text-anchor="middle">Hava durumunu öğren</text>
+          <polygon points="190,168 276,212 190,256 104,212" fill="#FEF3C7" stroke="#E9A23B" stroke-width="2"/><text x="190" y="208" text-anchor="middle">Kar</text><text x="190" y="224" text-anchor="middle">yağıyor mu?</text>
+          <text x="78" y="204" fill="#0E7C66">Evet</text><text x="282" y="204" fill="#B91C1C">Hayır</text>
+          <rect x="0" y="320" width="120" height="48" rx="6" fill="#fff" stroke="#0B3B36" stroke-width="2"/><text x="60" y="349" text-anchor="middle">Kayak takımı al</text>
+          <rect x="260" y="320" width="120" height="48" rx="6" fill="#fff" stroke="#0B3B36" stroke-width="2"/><text x="320" y="341" text-anchor="middle">Yürüyüş</text><text x="320" y="357" text-anchor="middle">ayakkabısı giy</text>
+          <rect x="150" y="386" width="80" height="48" rx="6" fill="#fff" stroke="#0B3B36" stroke-width="2"/><text x="190" y="407" text-anchor="middle">Teleferiğe</text><text x="190" y="423" text-anchor="middle">bin</text>
+          <ellipse cx="190" cy="494" rx="70" ry="22" fill="#FEE2E2" stroke="#B91C1C" stroke-width="2"/><text x="190" y="499" text-anchor="middle">BİTİR</text>
+        </svg>
+        </div>
+        <div class="text-sm text-slate-700 space-y-2">
+          <p><b>1.</b> Oval şekil algoritmanın başlangıcını gösterir.</p>
+          <p><b>2.</b> Paralelkenar bir <b>girdi</b>dir: hava durumu bilgisini alıyoruz.</p>
+          <p><b>3.</b> Eşkenar dörtgen bir <b>karar</b>dır. İki çıkışı vardır: Evet / Hayır.</p>
+          <p><b>4.</b> Dikdörtgenler yapılacak <b>işlem</b>leri gösterir.</p>
+          <p><b>5.</b> İki yol yeniden birleşir ve algoritma oval "BİTİR" ile sonlanır.</p>
+          <div class="rounded-2xl bg-amber-50 p-4 mt-3"><b>Sınıf görevi:</b> Aynı diyagrama "Sıcaklık 0°C'nin altında mı?" kararını ekleyerek "Mont giy" adımını yerleştirin.</div>
+        </div>
+      </div>
+    </div>
+    <div class="mt-8 flex justify-between"><a href="#/yapilar" class="font-bold text-slate-500">← Temel Yapılar</a><a href="#/etkinlikler" class="font-bold text-bursa-green">Etkinlikler →</a></div>
+  </div>
+</section>
+
+<!-- ================= ETKİNLİK LİSTESİ ================= -->
+<section id="page-etkinlikler" class="page hidden">
+  <span class="chip bg-amber-100 text-bursa-chestnut">Bursa Özelinde Yeniden Tasarlandı</span>
+  <h1 class="font-display font-extrabold text-4xl mt-2 text-bursa-dark">Etkinlikler</h1>
+  <p class="mt-3 text-lg text-slate-700 max-w-3xl">Her etkinlikte yaş grubu, süre, malzemeler, adım adım uygulama, çalışma kâğıdı ve öğretmen değerlendirme rubriği bulunur. Etkinlik sayfasındaki <b>"Etkinliği PDF Olarak İndir"</b> butonuyla A4 formatında kaydedebilirsiniz.</p>
+  <div class="flex flex-wrap gap-2 mt-5 no-print" id="filterBar"></div>
+  <div id="activityGrid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 mt-5"></div>
+</section>
+
+<!-- ================= ETKİNLİK DETAY ================= -->
+<section id="page-detay" class="page hidden"></section>
+
+</main>
+
+<!-- ================= FOOTER ================= -->
+<footer class="bg-bursa-dark text-emerald-50 mt-16">
+  <div class="max-w-7xl mx-auto px-4 py-10 grid md:grid-cols-3 gap-8 text-sm">
+    <div>
+      <div class="font-display font-extrabold text-2xl">Kod<span class="text-bursa-mint">Bursa</span></div>
+      <p class="mt-2 text-emerald-100/80">Bursa'nın tarihi ve kültürel mirasıyla buluşan, ücretsiz bilgisayarsız kodlama etkinlikleri platformu.</p>
+    </div>
+    <div>
+      <b class="text-bursa-gold">Hazırlayan Kurum</b>
+      <p class="mt-2">T.C. Bursa Valiliği<br>Bursa İl Milli Eğitim Müdürlüğü<br><b>Yenilik ve Eğitim Teknolojileri Hizmetleri Şubesi</b></p>
+    </div>
+    <div>
+      <b class="text-bursa-gold">Hızlı Bağlantılar</b>
+      <div class="mt-2 grid grid-cols-2 gap-1">
+        <a href="#/ana" class="hover:text-bursa-mint">Anasayfa</a><a href="#/algoritma" class="hover:text-bursa-mint">Algoritma</a>
+        <a href="#/ozellikler" class="hover:text-bursa-mint">Özellikler</a><a href="#/yapilar" class="hover:text-bursa-mint">Temel Yapılar</a>
+        <a href="#/akis" class="hover:text-bursa-mint">Akış Diyagramları</a><a href="#/etkinlikler" class="hover:text-bursa-mint">Etkinlikler</a>
+      </div>
+    </div>
+  </div>
+  <div class="border-t border-white/10 text-center text-xs py-4 px-4 text-emerald-100/70">
+    © <span id="year"></span> Bursa İl Milli Eğitim Müdürlüğü Yenilik ve Eğitim Teknolojileri Hizmetleri Şubesi · Tüm içerikler eğitim amaçlı ücretsiz olarak çoğaltılıp kullanılabilir.
+  </div>
+</footer>
+
+<script>
+/* =========================================================
+   KodBot SVG
+   ========================================================= */
+function kodbotSVG(screen){
+  return `<svg viewBox="0 0 200 230" class="kodbot w-full h-auto" role="img" aria-label="KodBot maskotu">
+    <ellipse cx="100" cy="222" rx="55" ry="7" fill="rgba(0,0,0,.15)"/>
+    <line x1="100" y1="34" x2="100" y2="14" stroke="#0B3B36" stroke-width="5" stroke-linecap="round"/>
+    <path d="M100 2c9 0 14 6 14 12 0 5-6 8-14 8s-14-3-14-8c0-6 5-12 14-12z" fill="#8B4A2B"/>
+    <path d="M92 8c4-2 12-2 16 0" stroke="#E9A23B" stroke-width="2" fill="none"/>
+    <rect x="40" y="32" width="120" height="92" rx="30" fill="#14B8A6" stroke="#0B3B36" stroke-width="4"/>
+    <rect x="32" y="64" width="10" height="28" rx="5" fill="#E9A23B"/><rect x="158" y="64" width="10" height="28" rx="5" fill="#E9A23B"/>
+    <rect x="56" y="50" width="88" height="56" rx="20" fill="#0B3B36"/>
+    <g class="eye"><ellipse cx="80" cy="76" rx="9" ry="11" fill="#5EEAD4"/><ellipse cx="120" cy="76" rx="9" ry="11" fill="#5EEAD4"/></g>
+    <circle cx="83" cy="72" r="3" fill="#fff"/><circle cx="123" cy="72" r="3" fill="#fff"/>
+    <path d="M88 94q12 9 24 0" stroke="#5EEAD4" stroke-width="4" fill="none" stroke-linecap="round"/>
+    <circle cx="64" cy="98" r="5" fill="#F472B6" opacity=".6"/><circle cx="136" cy="98" r="5" fill="#F472B6" opacity=".6"/>
+    <rect x="52" y="130" width="96" height="70" rx="22" fill="#0E7C66" stroke="#0B3B36" stroke-width="4"/>
+    <rect x="70" y="144" width="60" height="34" rx="10" fill="#FFF8EC"/>
+    <text x="100" y="168" text-anchor="middle" font-family="Baloo 2, sans-serif" font-weight="800" font-size="20" fill="#0E7C66">${screen||'16'}</text>
+    <circle cx="80" cy="190" r="4" fill="#E9A23B"/><circle cx="100" cy="190" r="4" fill="#5EEAD4"/><circle cx="120" cy="190" r="4" fill="#F472B6"/>
+    <path d="M52 150q-22 6-20 30" stroke="#0B3B36" stroke-width="8" fill="none" stroke-linecap="round"/>
+    <path d="M148 150q22-10 26-34" stroke="#0B3B36" stroke-width="8" fill="none" stroke-linecap="round"/>
+    <circle cx="32" cy="182" r="8" fill="#E9A23B"/><circle cx="174" cy="114" r="8" fill="#E9A23B"/>
+    <rect x="70" y="198" width="18" height="18" rx="6" fill="#0B3B36"/><rect x="112" y="198" width="18" height="18" rx="6" fill="#0B3B36"/>
+  </svg>`;
+}
+
+/* =========================================================
+   VERİLER
+   ========================================================= */
+const BID = [
+  {icon:'🧩', title:'Ayrıştırma', color:'bg-emerald-50 border-emerald-200', text:'Büyük bir problemi küçük, yönetilebilir parçalara bölmek.', ex:'Bursa kahvaltısını hazırlamak → çay demleme, tahinli pide, Gemlik zeytini tabağı, kestane balı olarak parçalara ayrılır.'},
+  {icon:'🔍', title:'Örüntü Tanıma', color:'bg-sky-50 border-sky-200', text:'Problemler arasındaki benzerlikleri ve tekrar eden yapıları fark etmek.', ex:'Yeşil Türbe çinilerindeki lale ve geometrik motiflerin düzenli aralıklarla tekrar ettiğini görmek.'},
+  {icon:'🎯', title:'Soyutlama', color:'bg-amber-50 border-amber-200', text:'Gereksiz ayrıntıları ayıklayıp yalnızca önemli bilgiye odaklanmak.', ex:'Bursa metro haritasında binaların rengi değil, yalnızca istasyonların sırası ve aktarma noktaları önemlidir.'},
+  {icon:'🪜', title:'Algoritmik Düşünme', color:'bg-rose-50 border-rose-200', text:'Çözümü açık, sıralı ve tekrar uygulanabilir adımlar hâlinde yazmak.', ex:'İskender kebap servisini adım adım tarif etmek: pide → döner → domates sosu → tereyağı → yoğurt.'}
+];
+
+const FEATURES = [
+  {icon:'💎', t:'Netlik (Kesinlik)', d:'Her adım tek bir anlama gelmeli, yoruma açık olmamalıdır.', ex:'"Biraz kestane şekeri koy" yerine "5 adet kestane şekeri koy".'},
+  {icon:'🏁', t:'Sonluluk', d:'Algoritma belirli sayıda adımdan sonra mutlaka bitmelidir.', ex:'"Tophane yokuşunu sürekli çık" sonsuzdur; "Saat Kulesi\'ne ulaşınca dur" sonludur.'},
+  {icon:'📥', t:'Girdi', d:'Algoritmanın işleyeceği başlangıç bilgileri veya malzemeleri vardır (sıfır ya da daha fazla).', ex:'İskender için girdiler: pide, döner, domates sosu, tereyağı, yoğurt.'},
+  {icon:'📤', t:'Çıktı', d:'Algoritma en az bir sonuç üretmelidir.', ex:'Çıktı: Servise hazır bir porsiyon İskender kebap.'},
+  {icon:'🔢', t:'Sıralılık', d:'Adımlar mantıklı bir sırayla yazılmalıdır.', ex:'Önce kutuyu doldur, sonra kapağını kapat.'},
+  {icon:'⚙️', t:'Etkinlik (Uygulanabilirlik)', d:'Her adım gerçekten yapılabilir ve basit olmalıdır.', ex:'"Uludağ\'ı bir saniyede tırman" uygulanamaz; "Teleferiğe bin" uygulanabilir.'},
+  {icon:'🌐', t:'Genellik', d:'Algoritma benzer tüm problemler için kullanılabilmelidir.', ex:'Pide tarifi 1 kişi için de 10 kişi için de çalışmalıdır.'}
+];
+
+const SYMBOLS = [
+  {name:'Başla / Bitir', d:'Algoritmanın başlangıç ve bitiş noktası.', svg:'<ellipse cx="60" cy="30" rx="52" ry="22" fill="#D1FAE5" stroke="#0E7C66" stroke-width="3"/>'},
+  {name:'İşlem', d:'Yapılacak bir iş veya hesaplama. Örn: "Pideyi doğra".', svg:'<rect x="10" y="8" width="100" height="44" rx="4" fill="#fff" stroke="#0B3B36" stroke-width="3"/>'},
+  {name:'Karar', d:'Evet/Hayır sorusu; koşula göre yol ayrımı. Örn: "Kar var mı?"', svg:'<polygon points="60,4 112,30 60,56 8,30" fill="#FEF3C7" stroke="#E9A23B" stroke-width="3"/>'},
+  {name:'Girdi / Çıktı', d:'Dışarıdan bilgi alma veya sonucu gösterme.', svg:'<polygon points="28,8 112,8 92,52 8,52" fill="#E0F2FE" stroke="#1E6FA8" stroke-width="3"/>'},
+  {name:'Akış Oku', d:'Adımların hangi sırayla izleneceğini gösterir.', svg:'<line x1="10" y1="30" x2="100" y2="30" stroke="#0B3B36" stroke-width="4"/><polygon points="100,20 116,30 100,40" fill="#0B3B36"/>'},
+  {name:'Bağlantı', d:'Diyagramın farklı kısımlarını birleştirir.', svg:'<circle cx="60" cy="30" r="22" fill="#FCE7F3" stroke="#BE185D" stroke-width="3"/><text x="60" y="36" text-anchor="middle" font-weight="800" font-size="16" fill="#BE185D">A</text>'}
+];
+
+/* Türk alfabesi – sayı eşleşmesi (ikili şifreleme için) */
+const ALFABE = 'ABCÇDEFGĞHIİJKLMNOÖPRSŞTUÜVYZ'.split('');
+
+/* Harita gösterimi: S başlangıç, T hedef, # engel, . boş */
+const MAP_TOPHANE = ['S..#..','.#.#..','.#....','...##.','.#..#.','.#...T'];
+const MAP_KOZA    = ['S.#....','#.#.##.','..#..#.','.##.##.','....#..','.##...#','...#..T'];
+
+const ACTIVITIES = [
+ {
+  id:1, emoji:'🥯', color:'from-amber-400 to-orange-500', tag:'Ayrıştırma',
+  title:'Bursa Kahvaltısı: Tahinli Pide Zamanı',
+  sub:'Ayrıştırma ve algoritma adımları',
+  age:'6–9 yaş (Okul öncesi – İlkokul 3)', time:'40 dakika', group:'4–5 kişilik gruplar',
+  skills:['Ayrıştırma','Algoritmik Düşünme','Sıralama'],
+  materials:['Çalışma kâğıdındaki adım kartları (her gruba 1 takım)','Makas ve yapıştırıcı','A3 kâğıt veya karton','Renkli kalemler','İsteğe bağlı: oyuncak tabak-bardak, tahinli pide görseli'],
+  goals:['Büyük bir problemi alt problemlere ayırır.','Bir işi yapmak için gereken adımları doğru sıraya koyar.','Adımların sırası değiştiğinde sonucun nasıl etkilendiğini açıklar.'],
+  story:'KodBot Bursa\'ya ilk kez geldi ve bir Bursa kahvaltısı hazırlamak istiyor! Ama KodBot bir robot: ona ne söylerseniz yalnızca onu yapar. Sofrada çay, Gemlik zeytini, peynir, kestane balı ve tabii ki fırından yeni çıkmış tahinli pide olmalı. KodBot\'a yardım edelim!',
+  steps:[
+    '<b>Isınma (5 dk):</b> "Kahvaltı sofrası nasıl hazırlanır?" sorusuyla beyin fırtınası yapın. Bursa kahvaltısına özgü yiyecekleri (tahinli pide, Gemlik zeytini, kestane balı, peynir, çay) tahtaya yazın.',
+    '<b>Ayrıştırma (8 dk):</b> Tahtaya ortasında "BURSA KAHVALTISI" yazan bir zihin haritası çizin. Öğrencilerle birlikte işi alt görevlere ayırın: <i>Masayı kurmak – Çayı demlemek – Tahinli pideyi hazırlamak – Tabakları doldurmak</i>.',
+    '<b>Kart sıralama (10 dk):</b> Gruplara karışık "Tahinli Pide" adım kartlarını dağıtın. Gruplar kartları doğru sıraya dizip A3 kâğıda yapıştırsın.',
+    '<b>KodBot Oyunu (10 dk):</b> Her gruptan bir öğrenci "KodBot" olur. Grubun "programcısı" kartları sırayla okur; KodBot yalnızca okunan adımı pandomimle canlandırır. Eksik ya da yanlış sıradaki adımlarda KodBot "HATA!" der ve durur.',
+    '<b>Hata Ayıklama (4 dk):</b> Hata çıkan gruplar algoritmalarını düzeltir. "Elleri yıkamayı unutursak ne olur?", "Pişirme adımı başa gelirse?" sorularını tartışın.',
+    '<b>Kapanış (3 dk):</b> Her grup çay demleme algoritmasını 4–5 adımda kendisi yazar ve sınıfa okur.'
+  ],
+  widget:'sort',
+  sortItems:['Ellerini yıka','Hamuru yuvarla ve merdaneyle aç','Tahin ile şekeri karıştır','Karışımı hamurun üzerine sür','Hamuru rulo yap ve spiral şeklinde kıvır','Spirali bastırarak yassılaştır','Fırında 20 dakika pişir','Afiyetle servis et'],
+  worksheet:'sortcards',
+  rubric:['Problemi en az 3 alt göreve ayırabildi.','Adım kartlarını doğru sıraya dizdi.','KodBot oyununda hatalı adımı fark edip düzeltti.','Kendi çay demleme algoritmasını yazdı.'],
+  questions:['Bir adımı atlarsak sonuç nasıl değişir?','Hangi adımların yeri değişse de sonuç bozulmaz?','Evdeki başka hangi işleri algoritma olarak yazabiliriz?'],
+  family:'Evde kahvaltıyı birlikte hazırlarken çocuğunuzdan adımları sırayla söylemesini isteyin; siz yalnızca söyleneni yapan "robot" olun.'
+ },
+ {
+  id:2, emoji:'🕰️', color:'from-emerald-500 to-teal-600', tag:'Algoritma',
+  title:'Tophane Saat Kulesi\'ne Rota Oluşturma',
+  sub:'KodBot ile yön kartları ve yönlendirme oyunları',
+  age:'7–11 yaş (İlkokul 1 – 4)', time:'40–80 dakika (1–2 ders saati)', group:'Bütün sınıf / 3–4 kişilik gruplar',
+  skills:['Algoritmik Düşünme','Hata Ayıklama','Uzamsal Düşünme'],
+  materials:['Sınıf zemini için maskeleme bandı veya tebeşir (6×6 ızgara)','Yön kartları (↑ → ↓ ←) – çalışma kâğıdından kesilir','Engel kartları (ağaç, çeşme, tarihî ev)','Tophane Saat Kulesi görseli (hedef)','KodBot için şapka veya yelek'],
+  goals:['Yön komutlarını kullanarak başlangıçtan hedefe bir algoritma oluşturur.','Algoritmadaki hatayı bulup düzeltir (hata ayıklama).','Aynı hedefe giden farklı algoritmaları karşılaştırır.'],
+  story:'KodBot, Osmangazi\'deki tarihî Tophane Saat Kulesi\'ne çıkıp Bursa\'yı yukarıdan izlemek istiyor. Ama yol üzerinde çınar ağaçları, çeşmeler ve tarihî evler var. KodBot yalnızca yön kartlarındaki komutları anlıyor: ileri, geri, sağ, sol. Ona en kısa rotayı programlayabilir misiniz?',
+  steps:[
+    '<b>Hazırlık:</b> Sınıf zeminine maskeleme bandıyla 6×6 kare ızgara çizin (her kare yaklaşık bir adım). Çalışma kâğıdındaki haritaya göre engel kartlarını ve hedefe Saat Kulesi görselini yerleştirin.',
+    '<b>Kuralları tanıtın:</b> ↑ bir kare yukarı, → bir kare sağa, ↓ bir kare aşağı, ← bir kare sola. KodBot engellerin üzerine basamaz, ızgaranın dışına çıkamaz.',
+    '<b>Programlama:</b> Gruplar masalarında kâğıt harita üzerinde yön kartlarını sıraya dizerek algoritmalarını oluşturur.',
+    '<b>Çalıştırma:</b> Bir grup öğrencisi KodBot olur; programcı kartları tek tek gösterir, KodBot yalnızca gösterilen kartı uygular.',
+    '<b>Hata ayıklama:</b> KodBot engele çarparsa ya da hedefe ulaşamazsa grup "bug"ı (hatayı) bulup ilgili kartı değiştirir.',
+    '<b>İleri seviye:</b> Yön kartlarını "İleri git – Sağa dön – Sola dön" kartlarıyla değiştirin. KodBot artık baktığı yöne göre hareket eder; bu, gerçek robot programlamaya çok daha yakındır.',
+    '<b>Kapanış:</b> En az kartla hedefe ulaşan algoritmaları karşılaştırın. "Döngü kullanabilseydik nasıl kısaltırdık?" (Örn: → → → yerine 3 × →).'
+  ],
+  widget:'grid', map:MAP_TOPHANE, icons:{'#':'🌳','T':'🕰️'}, success:'Tebrikler! KodBot Tophane Saat Kulesi\'ne ulaştı ve Bursa manzarasını izliyor! 🎉',
+  worksheet:'gridcards',
+  rubric:['Yön komutlarını doğru kullandı.','Engelleri dikkate alan bir rota oluşturdu.','Hatalı adımı bulup düzeltti.','Daha kısa (verimli) bir rota önerdi.'],
+  questions:['Hedefe giden kaç farklı yol bulabildiniz?','En kısa algoritma kaç adımdan oluşuyor?','KodBot\'un yönüne göre hareket etmesi işi nasıl değiştirdi?'],
+  family:'Evde mutfaktan salona giden yolu yön komutlarıyla tarif etme oyunu oynayın.'
+ },
+ {
+  id:3, emoji:'🍖', color:'from-rose-500 to-red-600', tag:'Hata Ayıklama',
+  title:'İskender Kebap Ustası & Kestane Şekeri Paketleme Robotu',
+  sub:'Adım adım algoritma yazma ve hata ayıklama',
+  age:'8–12 yaş (İlkokul 3 – Ortaokul 6)', time:'40 dakika', group:'İkili veya 3 kişilik gruplar',
+  skills:['Algoritmik Düşünme','Hata Ayıklama','Ayrıştırma'],
+  materials:['Çalışma kâğıdı (algoritma ve hata avı sayfası)','Kurşun kalem, silgi, kırmızı kalem','İsteğe bağlı: boş küçük kutu ve kâğıttan kestane şekerleri (canlandırma için)'],
+  goals:['Bir süreci açık ve sıralı adımlarla yazar.','Hatalı bir algoritmadaki yanlış adımı bulur ve düzeltir.','Hata ayıklamanın (debugging) programlamadaki önemini açıklar.'],
+  story:'Bursa\'nın dünyaca ünlü lezzeti İskender kebabın, 19. yüzyılda Bursa\'da İskender Efendi tarafından ortaya çıkarıldığı anlatılır. Bugün KodBot iki işte çalışıyor: Sabah İskender ustasının çırağı, öğleden sonra ise kestane şekeri fabrikasında paketleme robotu! Ama paketleme programında bir hata var…',
+  steps:[
+    '<b>Bölüm A – İskender Ustası (15 dk):</b> Öğrencilerden bir porsiyon İskender kebabın servisini en az 6 adımda yazmalarını isteyin. (Örnek: Pideyi küp doğra → Tabağa yay → Döneri pidenin üzerine diz → Domates sosunu gezdir → Kızgın tereyağını dök → Yanına yoğurt koy.)',
+    '<b>Akran testi:</b> İkililer algoritmalarını değiştirir. Bir öğrenci okur, diğeri yalnızca yazılanı canlandırır. "Tereyağını kızdır" adımı unutulduysa? Belirsiz bir ifade var mı?',
+    '<b>Bölüm B – Paketleme Robotu (15 dk):</b> Çalışma kâğıdındaki kestane şekeri paketleme algoritmasını dağıtın. Bu algoritmada bilerek yapılmış bir <b>hata</b> var.',
+    '<b>Hata avı:</b> Öğrenciler hatalı adımı kırmızı kalemle işaretler ve algoritmanın doğru hâlini yazar.',
+    '<b>Tartışma (10 dk):</b> "Bilgisayar programlarında hata olursa ne olur?" Gerçek hayattan örnekler (yanlış rota veren navigasyon, hatalı fiş basan kasa) konuşun. Hata yapmanın öğrenmenin parçası olduğunu vurgulayın.'
+  ],
+  widget:'bug',
+  bugSteps:['Boş kutuyu bandın üzerine koy','Kutunun içine yaldızlı kâğıt ser','Kutunun kapağını kapat','12 adet kestane şekerini kutuya yerleştir','Kutuya "Bursa" etiketini yapıştır','Kutuyu koliye koy'],
+  bugIndex:2, bugExplain:'Doğru! Kapak, kestane şekerleri yerleştirilmeden kapatılırsa kutu boş kalır. Doğru sıra: … yaldızlı kâğıt ser → 12 kestane şekerini yerleştir → kapağı kapat → etiket yapıştır …',
+  worksheet:'bughunt',
+  rubric:['İskender servis algoritmasını en az 6 açık adımla yazdı.','Belirsiz ifadeleri netleştirdi.','Paketleme algoritmasındaki hatayı buldu.','Algoritmanın doğru hâlini yazdı.'],
+  questions:['Hata ayıklarken nasıl bir yol izlediniz?','Bir algoritmada birden fazla hata olabilir mi?','Robotlar neden belirsiz talimatları anlayamaz?'],
+  family:'Birlikte yemek yaparken tarifte bilerek bir hata yapın; çocuğunuz hatayı bulsun.'
+ },
+ {
+  id:4, emoji:'🏔️', color:'from-sky-500 to-blue-600', tag:'Koşullu Yapı',
+  title:'Uludağ\'da Hava Durumu: Karlı mı, Güneşli mi?',
+  sub:'Koşullu (if-else) yapılar',
+  age:'7–12 yaş (İlkokul 2 – Ortaokul 6)', time:'40 dakika', group:'Bütün sınıf',
+  skills:['Koşullu Mantık','Algoritmik Düşünme','Soyutlama'],
+  materials:['Hava durumu kartları: ☀️ Güneşli, ❄️ Karlı, 🌧️ Yağmurlu, 🌫️ Sisli','"EĞER", "İSE", "DEĞİLSE" kelime kartları','Eşya kartları: kayak takımı, şemsiye, güneş gözlüğü, mont, fener','Kartların çekileceği bir torba'],
+  goals:['EĞER–İSE–DEĞİLSE yapısını günlük yaşam örnekleriyle açıklar.','Bir koşula göre farklı eylemler seçen algoritmalar oluşturur.','İç içe koşulları basit örneklerle kullanır.'],
+  story:'KodBot, Bursa\'nın simgesi Uludağ\'a gezi planlıyor. Ama dağda hava çok çabuk değişir! KodBot\'un çantasına neyi koyacağına karar vermesi için ona koşullu talimatlar yazmalıyız.',
+  steps:[
+    '<b>Giriş (5 dk):</b> "Dışarıda yağmur yağıyorsa ne yaparsınız?" sorusuyla günlük hayattaki kararları konuşun. Tahtaya EĞER ... İSE ... DEĞİLSE ... kalıbını yazın.',
+    '<b>Hareketli Koşul Oyunu (12 dk):</b> Kuralları tahtaya yazın: <i>EĞER kar yağıyorsa İSE kayak yapıyormuş gibi çömel. EĞER güneşliyse İSE kollarını güneş gibi aç. DEĞİLSE şemsiye açıyormuş gibi yap.</i> Öğretmen torbadan hava kartı çeker; öğrenciler kurala uygun hareketi yapar.',
+    '<b>Çanta Hazırlama (10 dk):</b> Gruplar, her hava durumu için KodBot\'un çantasına hangi eşyayı koyacağını EĞER–İSE kartlarıyla yazar.',
+    '<b>İç içe koşul (8 dk):</b> İkinci kart destesi olarak sıcaklık kartları (-10°C, 5°C, 20°C) ekleyin: "EĞER kar yağıyorsa İSE (EĞER sıcaklık 0°C\'nin altındaysa İSE kalın mont da al)".',
+    '<b>Kapanış (5 dk):</b> Çalışma kâğıdındaki koşul tablosunu doldurun; algoritmayı akış diyagramı olarak çizmeye çalışın.'
+  ],
+  widget:'weather',
+  worksheet:'iftable',
+  rubric:['EĞER–İSE–DEĞİLSE yapısını doğru kurdu.','Her koşula uygun eylemi seçti.','İç içe koşul örneği oluşturdu.','Koşullu yapıyı akış diyagramıyla gösterdi.'],
+  questions:['Hiçbir koşul sağlanmazsa ne olmalı?','İki koşul aynı anda doğru olabilir mi? (Hem karlı hem sisli)','Trafik lambası hangi koşullarla çalışır?'],
+  family:'Sabah hava durumuna bakarken "EĞER yağmur yağıyorsa İSE ..." cümlesini birlikte tamamlayın.'
+ },
+ {
+  id:5, emoji:'🕌', color:'from-teal-500 to-cyan-600', tag:'Döngü',
+  title:'Ulu Cami Merdivenleri / Tophane Yokuşunu Çıkalım',
+  sub:'Döngüsel yapılar',
+  age:'7–12 yaş (İlkokul 2 – Ortaokul 6)', time:'40 dakika', group:'Bütün sınıf / gruplar',
+  skills:['Örüntü Tanıma','Döngüler','Soyutlama'],
+  materials:['Tahtada veya zeminde çizilmiş basamaklar (maskeleme bandı)','"TEKRARLA ... KEZ" kartı ve sayı kartları (1–20)','Hareket kartları: Basamak çık, Alkışla, Zıpla, Dön','Çalışma kâğıdı (Ulu Cami kubbe ızgarası)'],
+  goals:['Tekrar eden adımları fark eder (örüntü tanıma).','Uzun talimatları TEKRARLA yapısıyla kısaltır.','Sayı ve koşul kontrollü döngü arasındaki farkı açıklar.','İç içe döngüye basit örnek verir.'],
+  story:'Bursa\'nın en büyük camisi olan Ulu Cami\'nin tam 20 kubbesi vardır. KodBot hem kubbeleri saymak hem de Tophane yokuşunu tırmanıp Saat Kulesi\'ne ulaşmak istiyor. Ama her adımı tek tek yazmak çok uzun sürüyor… Daha akıllıca bir yol olmalı!',
+  steps:[
+    '<b>Giriş (5 dk):</b> Tahtaya 8 kez "Bir basamak çık" yazın. Öğrencilere "Bu talimatı daha kısa yazabilir miyiz?" diye sorun ve TEKRARLA kartını tanıtın.',
+    '<b>Ritim Döngüsü (10 dk):</b> "TEKRARLA 4 KEZ: Basamak çık, Alkışla" gibi kartları gösterin; sınıf hep birlikte uygular. Ardından sayıyı değiştirin, hareketleri birleştirin.',
+    '<b>Yokuş Görevi (8 dk):</b> Zemine çizilen basamaklarda bir öğrenci KodBot olur. Diğerleri "TEKRARLA 6 KEZ: Bir basamak çık" ve "TEKRARLA kuleye ulaşana kadar" gibi iki farklı döngü türünü dener.',
+    '<b>Kubbe Görevi (12 dk):</b> Çalışma kâğıdındaki ızgarada Ulu Cami\'nin 20 kubbesini iç içe döngüyle çizin: <i>TEKRARLA 4 KEZ { TEKRARLA 5 KEZ { Kubbe çiz } Alt satıra geç }</i>.',
+    '<b>Kapanış (5 dk):</b> Döngüsüz ve döngülü algoritmaların satır sayısını karşılaştırın. Döngü kullanmanın faydalarını listeleyin.'
+  ],
+  widget:'loop',
+  worksheet:'domes',
+  rubric:['Tekrar eden örüntüyü fark etti.','TEKRARLA yapısını doğru kullandı.','Sayı ve koşul kontrollü döngüyü ayırt etti.','İç içe döngüyle kubbe desenini çizdi.'],
+  questions:['Döngü kullanmak bize ne kazandırdı?','Sonsuz döngü nedir? Neden tehlikelidir?','Günlük hayatta tekrar eden işlere örnek verin.'],
+  family:'Merdiven çıkarken basamakları sayın; "TEKRARLA 10 KEZ: bir basamak çık" şeklinde komut verin.'
+ },
+ {
+  id:6, emoji:'🔢', color:'from-violet-500 to-purple-600', tag:'İkili Sistem',
+  title:'Bursa Plaka Kodu (16) ve Tarihi Yerlerle İkili Sayı Sistemi',
+  sub:'Binary kartlar ve şifre çözme',
+  age:'9–14 yaş (İlkokul 4 – Ortaokul 8)', time:'40–60 dakika', group:'İkili veya bireysel',
+  skills:['Örüntü Tanıma','Soyutlama','Veri Gösterimi'],
+  materials:['Her öğrenciye 5 adet ikili sayı kartı (1, 2, 4, 8, 16 noktalı) – çalışma kâğıdından kesilir','Harf–sayı tablosu (Türk alfabesi)','Şifreli mesaj kartları','Kurşun kalem'],
+  goals:['Bilgisayarların bilgiyi 0 ve 1 ile sakladığını açıklar.','Onluk sayıları ikili sisteme, ikili sayıları onluk sisteme çevirir.','Harfleri ikili kodlarla şifreler ve şifreli mesajları çözer.'],
+  story:'Bursa\'nın plaka kodu 16! Peki KodBot\'un ekranında 16 sayısı nasıl saklanıyor? Bilgisayarlar yalnızca iki şey bilir: AÇIK (1) ve KAPALI (0). KodBot, Bursa\'nın tarihî yerlerinin adlarını ikili kodlarla şifreledi. Şifreleri çözebilir misin?',
+  steps:[
+    '<b>Kartları keşfet (8 dk):</b> 5 kartı nokta sayıları sağdan sola 1, 2, 4, 8, 16 olacak şekilde dizdirin. "Bir sonraki kartta kaç nokta olmalı?" örüntüsünü buldurun (her kart bir öncekinin iki katı).',
+    '<b>Açık / Kapalı (8 dk):</b> Noktalar görünüyorsa kart AÇIK = 1, ters çevrilmişse KAPALI = 0. "Sadece 16\'lık kart açık: 10000 = 16 = Bursa!" Ardından 5, 9, 12, 21, 31 sayılarını kartlarla göstermelerini isteyin.',
+    '<b>Plaka Kodları (8 dk):</b> Komşu illerin plaka kodlarını ikili sisteme çevirin: Balıkesir 10, Bilecik 11, Yalova 77 (77 için 64\'lük kart gerekir – ileri seviye!).',
+    '<b>Şifre çözme (15 dk):</b> Harf–sayı tablosunu dağıtın (A=1, B=2 … Z=29). Şifreli mesaj kartlarındaki tarihî yer adlarını çözdürün. Örnek: 00010 11001 10101 10110 00001 = BURSA.',
+    '<b>Kendi şifren (6 dk):</b> Her öğrenci kendi adını veya en sevdiği Bursa yerini şifreler, sıra arkadaşı çözer.'
+  ],
+  widget:'binary',
+  worksheet:'binarycards',
+  rubric:['Kartlardaki iki katına çıkma örüntüsünü fark etti.','Onluk sayıyı ikili sisteme çevirdi.','İkili kodu harfe dönüştürüp şifreyi çözdü.','Kendi şifreli mesajını oluşturdu.'],
+  questions:['5 kartla gösterebileceğimiz en büyük sayı kaçtır? Neden?','Neden bilgisayarlar onluk değil ikili sistem kullanır?','29 harf için kaç kart gerekir?'],
+  family:'Akşam yemeğinde lamba açık–kapalı ile 0–1 oyunu oynayın; aile üyelerinin yaşlarını ikili kartlarla gösterin.'
+ },
+ {
+  id:7, emoji:'🧶', color:'from-blue-600 to-indigo-700', tag:'Problem Çözme',
+  title:'Koza Han Labirenti & Yeşil Türbe Çini Desenli Kodlamalı Sudoku',
+  sub:'Labirentte algoritma + mantıksal çıkarım',
+  age:'8–13 yaş (İlkokul 3 – Ortaokul 7)', time:'60 dakika', group:'İkili veya bireysel',
+  skills:['Algoritmik Düşünme','Mantıksal Çıkarım','Örüntü Tanıma'],
+  materials:['Koza Han labirent çalışma kâğıdı','Yön kartları veya kalem','Yeşil Türbe çini sudoku çalışma kâğıdı','Renkli kalemler (mavi, turkuaz, yeşil, kırmızı)','İsteğe bağlı: kesilebilir çini motifi kartları'],
+  goals:['Labirentte başlangıçtan çıkışa giden algoritmayı yön komutlarıyla yazar.','Kurallara dayalı mantıksal çıkarım yaparak sudoku çözer.','Sembolleri sayılarla kodlar (kodlama – kod çözme).'],
+  story:'Koza Han, 1491 yılında Sultan II. Bayezid döneminde yaptırılmış ve yüzyıllardır ipek kozası ticaretinin merkezi olmuştur. KodBot hanın koridorlarında kaybolan ipek kozasını bulmak zorunda! Ardından Yeşil Türbe\'ye gidiyor; burada turkuaz çinilerin desenleri bir bulmacanın şifresini saklıyor.',
+  steps:[
+    '<b>Bölüm A – Koza Han Labirenti (25 dk):</b> Labirent kâğıdını dağıtın. Öğrenciler önce kalemle yolu bulur, ardından bu yolu yön okları (↑ → ↓ ←) ile algoritma olarak yazar.',
+    '<b>Kısaltma:</b> Ardışık aynı okları döngüyle yazdırın: → → → yerine "3 × →". Algoritmanın kaç komuttan oluştuğunu sayın.',
+    '<b>Akran testi:</b> Arkadaşlar birbirinin algoritmasını labirentte parmakla izler; hata varsa birlikte düzeltir.',
+    '<b>Bölüm B – Çini Sudoku (25 dk):</b> Yeşil Türbe\'deki çinilerden esinlenen 4 motif (🌷 Lale = 1, 🔷 Çini karo = 2, ⭐ Yıldız = 3, 🍃 Yaprak = 4) tanıtılır. Kural: Her satırda, her sütunda ve her 2×2 bölgede her motif yalnızca bir kez bulunur.',
+    '<b>Kodlama:</b> Çözülen sudokunun ilk satırını sayı koduna çevirin (örn. 1-2-3-4). Bu, sembolleri sayılarla kodlamanın bir örneğidir.',
+    '<b>Kapanış (10 dk):</b> "Sudoku çözerken hangi kuralı/stratejiyi kullandın?" sorusuyla düşünme süreçlerini paylaşın.'
+  ],
+  widget:'mazesudoku', map:MAP_KOZA, icons:{'#':'🧱','T':'🐛'}, success:'Harika! KodBot ipek kozasını buldu ve Koza Han labirentinden çıktı! 🧶',
+  worksheet:'mazesudoku',
+  rubric:['Labirentte doğru yolu buldu.','Yolu yön komutlarıyla algoritma olarak yazdı.','Sudoku kurallarını doğru uyguladı.','Sembolleri sayılarla kodladı.'],
+  questions:['Labirentte yanlış yola girdiğinde ne yaptın?','Sudokuda ilk hangi kareyi doldurdun ve neden?','Kodlama ve kod çözme günlük hayatta nerelerde kullanılır?'],
+  family:'Gazete veya dergilerdeki labirentleri çözerken yolu ok işaretleriyle yazdırın.'
+ }
+];
+
+/* =========================================================
+   YARDIMCILAR
+   ========================================================= */
+const $ = (s, r=document) => r.querySelector(s);
+const $$ = (s, r=document) => [...r.querySelectorAll(s)];
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+function shuffle(a){ a=[...a]; for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
+function toBin(n, len=5){ return n.toString(2).padStart(len,'0'); }
+function encodeWord(w){ return w.toLocaleUpperCase('tr-TR').split('').map(ch => { const i = ALFABE.indexOf(ch); return i<0 ? '?' : toBin(i+1); }).join(' '); }
+
+function staticGrid(map, icons, cellSize='1.1cm'){
+  const cols = map[0].length;
+  return `<div style="display:grid;grid-template-columns:repeat(${cols},${cellSize});gap:3px;justify-content:center">` +
+    map.join('').split('').map(c => {
+      const cls = c==='#'?'wall':(c==='T'?'goal':'');
+      const ico = c==='S'?'🤖':(icons[c]||'');
+      return `<div class="gcell ${cls}" style="font-size:1rem">${ico}</div>`;
+    }).join('') + '</div>';
+}
+
+/* =========================================================
+   ANASAYFA / TEORİ RENDER
+   ========================================================= */
+function renderStatic(){
+  $('#kodbotHero').innerHTML = kodbotSVG('16');
+  $$('.kodbot-mini').forEach(e => e.innerHTML = kodbotSVG('?'));
+  $('#year').textContent = new Date().getFullYear();
+
+  $('#bidCards').innerHTML = BID.map(b => `
+    <div class="rounded-2xl border-2 ${b.color} p-5">
+      <div class="flex items-center gap-2"><span class="text-3xl">${b.icon}</span><h3 class="font-display font-bold text-xl">${b.title}</h3></div>
+      <p class="text-sm text-slate-700 mt-2">${b.text}</p>
+      <p class="text-sm mt-3 bg-white/80 rounded-xl p-3"><b>🏙️ Bursa örneği:</b> ${b.ex}</p>
+    </div>`).join('');
+
+  $('#featureCards').innerHTML = FEATURES.map(f => `
+    <button class="feature card p-5 text-left hover:-translate-y-1 transition">
+      <div class="text-3xl">${f.icon}</div>
+      <h3 class="font-display font-bold text-lg mt-1">${f.t}</h3>
+      <p class="text-sm text-slate-600 mt-1">${f.d}</p>
+      <p class="feature-ex hidden text-sm mt-3 bg-emerald-50 rounded-xl p-3"><b>Bursa örneği:</b> ${f.ex}</p>
+      <span class="feature-hint text-xs font-bold text-bursa-green mt-2 inline-block">Örneği göster ▾</span>
+    </button>`).join('');
+  $$('.feature').forEach(b => b.addEventListener('click', () => {
+    $('.feature-ex', b).classList.toggle('hidden');
+    $('.feature-hint', b).classList.toggle('hidden');
+  }));
+
+  $('#symbolCards').innerHTML = SYMBOLS.map(s => `
+    <div class="card p-5 flex items-center gap-4">
+      <svg viewBox="0 0 120 60" class="w-28 shrink-0">${s.svg}</svg>
+      <div><h3 class="font-bold">${s.name}</h3><p class="text-sm text-slate-600">${s.d}</p></div>
+    </div>`).join('');
+
+  const card = a => `
+    <a href="#/etkinlik/${a.id}" class="activity-card card overflow-hidden group hover:-translate-y-1 transition flex flex-col" data-tag="${a.tag}">
+      <div class="bg-gradient-to-br ${a.color} p-5 text-white relative">
+        <span class="chip bg-white/25">Etkinlik ${a.id}</span>
+        <div class="text-5xl mt-2 group-hover:scale-110 transition origin-left">${a.emoji}</div>
+      </div>
+      <div class="p-5 flex-1 flex flex-col">
+        <h3 class="font-display font-bold text-lg leading-snug">${a.title}</h3>
+        <p class="text-sm text-slate-600 mt-1">${a.sub}</p>
+        <div class="flex flex-wrap gap-1.5 mt-3 text-slate-600">
+          <span class="chip bg-slate-100">👥 ${a.age.split(' (')[0]}</span>
+          <span class="chip bg-slate-100">⏱️ ${a.time.split(' (')[0]}</span>
+          <span class="chip bg-emerald-50 text-bursa-green">${a.tag}</span>
+        </div>
+        <span class="mt-auto pt-4 font-bold text-bursa-green text-sm">Etkinliği aç →</span>
+      </div>
+    </a>`;
+  $('#activityGrid').innerHTML = ACTIVITIES.map(card).join('');
+  $('#homeActivities').innerHTML = ACTIVITIES.slice(0,4).map(card).join('');
+
+  const tags = ['Tümü', ...new Set(ACTIVITIES.map(a => a.tag))];
+  $('#filterBar').innerHTML = tags.map((t,i) => `<button class="filter px-4 py-1.5 rounded-full text-sm font-bold border ${i===0?'bg-bursa-green text-white border-bursa-green':'bg-white border-slate-200'}" data-f="${t}">${t}</button>`).join('');
+  $$('.filter').forEach(b => b.addEventListener('click', () => {
+    $$('.filter').forEach(x => x.className = 'filter px-4 py-1.5 rounded-full text-sm font-bold border bg-white border-slate-200');
+    b.className = 'filter px-4 py-1.5 rounded-full text-sm font-bold border bg-bursa-green text-white border-bursa-green';
+    $$('#activityGrid .activity-card').forEach(c => c.classList.toggle('hidden', b.dataset.f!=='Tümü' && c.dataset.tag!==b.dataset.f));
+  }));
+
+  // Yapılar sekmeleri
+  const setTab = t => {
+    $$('.struct-tab').forEach(b => b.className = 'struct-tab px-4 py-2 rounded-xl font-bold ' + (b.dataset.tab===t ? 'bg-bursa-green text-white' : 'bg-white border'));
+    $$('.struct-panel').forEach(p => p.classList.toggle('hidden', p.dataset.panel!==t));
+  };
+  $$('.struct-tab').forEach(b => b.addEventListener('click', () => setTab(b.dataset.tab)));
+  setTab('sirali');
+  $$('.ifdemo').forEach(b => b.addEventListener('click', () => {
+    $('#ifdemoOut').textContent = b.dataset.v==='kar'
+      ? '✔ Koşul DOĞRU → "Kayak takımını al" çalıştı. ⛷️'
+      : '✘ Koşul YANLIŞ → DEĞİLSE bölümü çalıştı: "Yürüyüş ayakkabısını giy". 🥾';
+  }));
+
+  // KodBot mesajları
+  const msgs = [
+    'Merhaba! Ben <b class="text-bursa-green">KodBot</b>. Bursa\'da kodlama macerasına hazır mısın? 🤖',
+    'Ekranımdaki 16 sayısı Bursa\'nın plaka kodu! İkili sistemde <b>10000</b> yazılır. 🔢',
+    'Ulu Cami\'nin 20 kubbesini saymak için bir <b>döngü</b> kullanırım: TEKRARLA 20 KEZ! 🕌',
+    'EĞER Uludağ\'da kar yağıyorsa İSE kayak yaparım, DEĞİLSE yürüyüşe çıkarım. 🏔️',
+    'Tahinli pide yapmak bile bir <b>algoritma</b>dır. Sıra çok önemli! 🥯',
+    'Kestane şekeri kutusunun kapağını önce kapatırsam… işte bu bir <b>bug</b>! 🐞'
+  ];
+  let mi = 0;
+  const nextMsg = () => { mi = (mi+1) % msgs.length; $('#kodbotText').innerHTML = msgs[mi]; };
+  $('#kodbotHero').addEventListener('click', nextMsg);
+  $('#kodbotBubble').addEventListener('click', nextMsg);
+
+  $('#menuBtn').addEventListener('click', () => $('#mobileMenu').classList.toggle('hidden'));
+}
+
+/* =========================================================
+   ETKİNLİK DETAY
+   ========================================================= */
+function infoBox(icon, label, val){ return `<div class="rounded-2xl bg-white/15 p-3"><div class="text-xs opacity-80">${icon} ${label}</div><div class="font-bold text-sm mt-0.5">${val}</div></div>`; }
+
+function worksheetHTML(a){
+  const dirCard = (s) => `<div class="cut w-16 h-16 grid place-items-center text-3xl font-extrabold text-bursa-green">${s}</div>`;
+  switch(a.worksheet){
+    case 'sortcards': return `
+      <p class="text-sm text-slate-600 mb-3">Kartları kesin, karıştırın ve doğru sıraya dizin.</p>
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">${shuffle(a.sortItems).map(t => `<div class="cut p-3 text-sm font-bold min-h-[64px] flex items-center justify-center text-center">🥯 ${t}</div>`).join('')}</div>
+      <p class="text-sm font-bold mt-5">Benim çay demleme algoritmam:</p>
+      <div class="mt-2 space-y-3">${[1,2,3,4,5].map(n=>`<div class="border-b border-dashed border-slate-300 pb-1 text-sm">${n}. </div>`).join('')}</div>`;
+    case 'gridcards': return `
+      <p class="text-sm text-slate-600 mb-3">🤖 Başlangıç · 🌳 Engel · 🕰️ Tophane Saat Kulesi</p>
+      ${staticGrid(a.map, a.icons)}
+      <p class="text-sm font-bold mt-5">Yön kartları (kesip kullanın):</p>
+      <div class="flex flex-wrap gap-2 mt-2">${['↑','→','↓','←','↑','→','↓','←','↑','→','↓','←'].map(dirCard).join('')}</div>
+      <p class="text-sm font-bold mt-5">Benim algoritmam:</p>
+      <div class="flex flex-wrap gap-1 mt-2">${Array.from({length:14}).map(()=>'<div class="w-9 h-9 border-2 border-slate-300 rounded-md"></div>').join('')}</div>`;
+    case 'bughunt': return `
+      <p class="text-sm font-bold">A) İskender Kebap Servis Algoritmam</p>
+      <div class="mt-2 space-y-3">${[1,2,3,4,5,6,7].map(n=>`<div class="border-b border-dashed border-slate-300 pb-1 text-sm">${n}. </div>`).join('')}</div>
+      <p class="text-sm font-bold mt-6">B) 🐞 Hata Avı: Kestane Şekeri Paketleme Robotu</p>
+      <p class="text-xs text-slate-500">Hatalı adımı kırmızı kalemle işaretle, doğru algoritmayı yanına yaz.</p>
+      <div class="grid grid-cols-2 gap-4 mt-2 text-sm">
+        <ol class="list-decimal ml-5 space-y-1.5">${a.bugSteps.map(s=>`<li>${s}</li>`).join('')}</ol>
+        <div class="space-y-3">${[1,2,3,4,5,6].map(n=>`<div class="border-b border-dashed border-slate-300 pb-1">${n}. </div>`).join('')}</div>
+      </div>`;
+    case 'iftable': return `
+      <p class="text-sm text-slate-600 mb-3">Tabloyu doldur: KodBot hangi hava durumunda ne yapmalı?</p>
+      <table class="rubric w-full"><thead><tr><th>EĞER hava…</th><th>İSE KodBot…</th><th>Çantaya ne koymalı?</th></tr></thead><tbody>
+        <tr><td>❄️ Karlı</td><td></td><td></td></tr><tr><td>☀️ Güneşli</td><td></td><td></td></tr>
+        <tr><td>🌧️ Yağmurlu</td><td></td><td></td></tr><tr><td>🌫️ Sisli</td><td></td><td></td></tr></tbody></table>
+      <p class="text-sm font-bold mt-5">Boşlukları doldur:</p>
+      <div class="code mt-2 !bg-slate-100 !text-slate-800">EĞER ______________________ İSE
+    ______________________________
+DEĞİLSE
+    ______________________________
+SON</div>`;
+    case 'domes': return `
+      <p class="text-sm text-slate-600 mb-3">Ulu Cami'nin 20 kubbesini iç içe döngü ile çiz: <b>TEKRARLA 4 KEZ { TEKRARLA 5 KEZ { Kubbe çiz } }</b></p>
+      <div style="display:grid;grid-template-columns:repeat(5,1.4cm);gap:6px;justify-content:center">${Array.from({length:20}).map(()=>'<div class="cut" style="height:1.4cm"></div>').join('')}</div>
+      <p class="text-sm font-bold mt-5">Döngüsüz talimatı döngüyle yeniden yaz:</p>
+      <div class="grid grid-cols-2 gap-4 mt-2 text-sm">
+        <div class="code !bg-slate-100 !text-slate-800">Basamak çık
+Alkışla
+Basamak çık
+Alkışla
+Basamak çık
+Alkışla
+Zıpla</div>
+        <div class="code !bg-slate-100 !text-slate-800">TEKRARLA ___ KEZ
+    ____________
+    ____________
+SON
+____________</div>
+      </div>`;
+    case 'binarycards': {
+      const bc = n => `<div class="cut p-2 flex flex-col items-center justify-between" style="width:2.6cm;height:3.6cm"><div class="dots" style="display:flex;flex-wrap:wrap;justify-content:center;gap:3px;max-width:2cm">${Array.from({length:n}).map(()=>'<span style="width:7px;height:7px;border-radius:50%;background:#E9A23B;display:inline-block"></span>').join('')}</div><b class="text-lg">${n}</b></div>`;
+      return `
+      <p class="text-sm text-slate-600 mb-3">İkili sayı kartları (kesip kullanın):</p>
+      <div class="flex flex-wrap gap-2 justify-center">${[16,8,4,2,1].map(bc).join('')}</div>
+      <p class="text-sm font-bold mt-5">Harf – Sayı Tablosu</p>
+      <div class="grid grid-cols-10 gap-1 mt-2 text-xs text-center">${ALFABE.map((h,i)=>`<div class="border rounded p-1"><b>${h}</b><br>${i+1}</div>`).join('')}</div>
+      <p class="text-sm font-bold mt-5">🔐 Şifreleri Çöz</p>
+      <table class="rubric w-full mt-2 text-sm"><tbody>
+        <tr><td>Örnek</td><td class="font-mono">${encodeWord('BURSA')}</td><td><b>BURSA</b></td></tr>
+        <tr><td>1</td><td class="font-mono">${encodeWord('KOZA')}</td><td></td></tr>
+        <tr><td>2</td><td class="font-mono">${encodeWord('ULU')}</td><td></td></tr>
+        <tr><td>3</td><td class="font-mono">${encodeWord('İPEK')}</td><td></td></tr>
+        <tr><td>4</td><td class="font-mono">${encodeWord('YEŞİL')}</td><td></td></tr>
+        <tr><td>Plaka</td><td class="font-mono">16 = _ _ _ _ _</td><td></td></tr>
+      </tbody></table>
+      <p class="text-xs text-slate-500 mt-2">Öğretmen cevap anahtarı: 1) KOZA 2) ULU 3) İPEK 4) YEŞİL · 16 = 10000</p>`;
+    }
+    case 'mazesudoku': return `
+      <p class="text-sm font-bold">A) Koza Han Labirenti</p>
+      <p class="text-xs text-slate-500 mb-2">🤖 Başlangıç · 🧱 Duvar · 🐛 İpek kozası (çıkış). Yolu çiz ve yön oklarıyla yaz.</p>
+      ${staticGrid(a.map, a.icons, '1cm')}
+      <div class="flex flex-wrap gap-1 mt-3 justify-center">${Array.from({length:18}).map(()=>'<div class="w-8 h-8 border-2 border-slate-300 rounded-md"></div>').join('')}</div>
+      <p class="text-sm font-bold mt-6">B) Yeşil Türbe Çini Sudokusu</p>
+      <p class="text-xs text-slate-500 mb-2">🌷 Lale = 1 · 🔷 Çini karo = 2 · ⭐ Yıldız = 3 · 🍃 Yaprak = 4 — Her satır, sütun ve 2×2 bölgede her motif bir kez.</p>
+      <div class="sudoku" style="max-width:6.5cm;pointer-events:none">${SUDOKU_GIVEN.flat().map(v=>`<div class="${v?'given':''}">${v?SUDOKU_SYM[v]:''}</div>`).join('')}</div>
+      <p class="text-sm mt-3">İlk satırın sayı kodu: ___ - ___ - ___ - ___</p>`;
+  }
+  return '';
+}
+
+function renderActivity(id){
+  const a = ACTIVITIES.find(x => x.id===id);
+  if(!a){ location.hash = '#/etkinlikler'; return; }
+  const idx = ACTIVITIES.indexOf(a);
+  const prev = ACTIVITIES[idx-1], next = ACTIVITIES[idx+1];
+  $('#page-detay').innerHTML = `
+  <div class="print-only mb-4 pb-3 border-b-2 border-bursa-green">
+    <div class="flex items-center justify-between gap-4">
+      <div class="text-xs leading-tight"><b>T.C. BURSA VALİLİĞİ</b><br>Bursa İl Milli Eğitim Müdürlüğü<br>Yenilik ve Eğitim Teknolojileri Hizmetleri Şubesi</div>
+      <div class="text-right text-xs"><b>KodBursa</b> · Bilgisayarsız Kodlama<br>Etkinlik ${a.id}</div>
+    </div>
+  </div>
+
+  <div class="no-print mb-4 flex flex-wrap items-center justify-between gap-3">
+    <a href="#/etkinlikler" class="font-bold text-slate-500 hover:text-bursa-green">← Tüm etkinlikler</a>
+    <button onclick="printActivity()" class="px-5 py-2.5 rounded-xl bg-bursa-chestnut text-white font-bold shadow hover:opacity-90">📄 Etkinliği PDF Olarak İndir</button>
+  </div>
+
+  <div class="rounded-[2rem] bg-gradient-to-br ${a.color} text-white p-6 sm:p-10 avoid-break">
+    <span class="chip bg-white/25">Etkinlik ${a.id} · ${a.tag}</span>
+    <div class="flex items-start gap-4 mt-3">
+      <div class="text-5xl sm:text-6xl">${a.emoji}</div>
+      <div><h1 class="font-display font-extrabold text-3xl sm:text-4xl leading-tight">${a.title}</h1><p class="mt-1 opacity-90">${a.sub}</p></div>
+    </div>
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 mt-6">
+      ${infoBox('👥','Yaş Grubu',a.age)}${infoBox('⏱️','Süre',a.time)}${infoBox('🧑‍🤝‍🧑','Grup',a.group)}${infoBox('🧠','Beceriler',a.skills.join(', '))}
+    </div>
+  </div>
+
+  <div class="grid lg:grid-cols-3 gap-5 mt-6">
+    <div class="lg:col-span-2 space-y-5">
+      <div class="card p-6 avoid-break">
+        <h2 class="font-display font-bold text-xl">📖 Senaryo</h2>
+        <div class="flex gap-4 items-start mt-3">
+          <div class="w-16 shrink-0 no-print">${kodbotSVG(a.id)}</div>
+          <p class="text-slate-700 bg-emerald-50 rounded-2xl p-4 italic">${a.story}</p>
+        </div>
+      </div>
+      <div class="card p-6">
+        <h2 class="font-display font-bold text-xl">🪜 Adım Adım Uygulama</h2>
+        <ol class="mt-4 space-y-3">
+          ${a.steps.map((s,i)=>`<li class="flex gap-3 avoid-break"><span class="shrink-0 w-8 h-8 rounded-full bg-bursa-green text-white grid place-items-center font-bold text-sm">${i+1}</span><p class="text-slate-700 text-sm leading-relaxed pt-1">${s}</p></li>`).join('')}
+        </ol>
+      </div>
+    </div>
+    <div class="space-y-5">
+      <div class="card p-6 avoid-break">
+        <h2 class="font-display font-bold text-xl">🎒 Malzemeler</h2>
+        <ul class="mt-3 space-y-2 text-sm text-slate-700">${a.materials.map(m=>`<li class="flex gap-2"><span>✔️</span><span>${m}</span></li>`).join('')}</ul>
+      </div>
+      <div class="card p-6 avoid-break">
+        <h2 class="font-display font-bold text-xl">🎯 Kazanımlar</h2>
+        <ul class="mt-3 space-y-2 text-sm text-slate-700">${a.goals.map(m=>`<li class="flex gap-2"><span>⭐</span><span>${m}</span></li>`).join('')}</ul>
+      </div>
+      <div class="card p-6 avoid-break bg-amber-50">
+        <h2 class="font-display font-bold text-xl">🏡 Ailelere Öneri</h2>
+        <p class="text-sm text-slate-700 mt-2">${a.family}</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card p-6 mt-6 no-print">
+    <div class="flex items-center justify-between flex-wrap gap-2">
+      <h2 class="font-display font-bold text-xl">🎮 Dijital Destek: Sınıfta Akıllı Tahtada Dene</h2>
+      <span class="chip bg-slate-100 text-slate-600">İsteğe bağlı – etkinliğin özü bilgisayarsızdır</span>
+    </div>
+    <div id="widget" class="mt-5"></div>
+  </div>
+
+  <div class="card p-6 mt-6 page-break">
+    <div class="print-only text-xs text-slate-500 mb-2">Etkinlik ${a.id}: ${a.title}</div>
+    <h2 class="font-display font-bold text-xl">✂️ Çalışma Kâğıdı</h2>
+    <p class="text-sm text-slate-500">Ad Soyad: ________________________ Sınıf: ________ Tarih: ____/____/______</p>
+    <div class="mt-4">${worksheetHTML(a)}</div>
+  </div>
+
+  <div class="card p-6 mt-6 avoid-break">
+    <h2 class="font-display font-bold text-xl">📝 Öğretmen Değerlendirme Bölümü</h2>
+    <div class="scroll-x mt-4">
+      <table class="rubric w-full min-w-[520px]">
+        <thead><tr><th class="text-left">Ölçüt</th><th>Başarılı</th><th>Geliştirilmeli</th><th>Desteklenmeli</th></tr></thead>
+        <tbody>${a.rubric.map(r=>`<tr><td>${r}</td><td class="text-center">☐</td><td class="text-center">☐</td><td class="text-center">☐</td></tr>`).join('')}</tbody>
+      </table>
+    </div>
+    <h3 class="font-bold mt-5">💬 Yansıtma Soruları</h3>
+    <ul class="list-disc ml-5 text-sm text-slate-700 mt-2 space-y-1">${a.questions.map(q=>`<li>${q}</li>`).join('')}</ul>
+    <h3 class="font-bold mt-5">🗒️ Öğretmen Notları</h3>
+    <div class="mt-2 space-y-4">${[1,2,3].map(()=>'<div class="border-b border-dashed border-slate-300 h-5"></div>').join('')}</div>
+  </div>
+
+  <div class="print-only mt-6 pt-2 border-t text-[10px] text-slate-500 text-center">Bursa İl Milli Eğitim Müdürlüğü · Yenilik ve Eğitim Teknolojileri Hizmetleri Şubesi · KodBursa Bilgisayarsız Kodlama Etkinlikleri</div>
+
+  <div class="no-print mt-8 flex flex-col sm:flex-row gap-3 justify-between items-stretch">
+    ${prev ? `<a href="#/etkinlik/${prev.id}" class="card p-4 font-bold hover:bg-emerald-50">← ${prev.emoji} ${prev.title}</a>` : '<span></span>'}
+    <button onclick="printActivity()" class="px-6 py-3 rounded-xl bg-bursa-chestnut text-white font-extrabold shadow-lg hover:opacity-90">📄 Etkinliği PDF Olarak İndir</button>
+    ${next ? `<a href="#/etkinlik/${next.id}" class="card p-4 font-bold hover:bg-emerald-50 text-right">${next.emoji} ${next.title} →</a>` : '<span></span>'}
+  </div>`;
+  initWidget(a, $('#widget'));
+}
+
+function printActivity(){
+  document.title = 'KodBursa - Etkinlik';
+  const a = ACTIVITIES.find(x => '#/etkinlik/'+x.id === location.hash);
+  if(a) document.title = `KodBursa_Etkinlik_${a.id}`;
+  window.print();
+  setTimeout(() => document.title = 'KodBursa | Bilgisayarsız Kodlama', 500);
+}
+
+/* =========================================================
+   ETKİLEŞİMLİ BİLEŞENLER
+   ========================================================= */
+function initWidget(a, el){
+  ({sort:initSort, grid:initGrid, bug:initBug, weather:initWeather, loop:initLoop, binary:initBinary, mazesudoku:initMazeSudoku})[a.widget]?.(a, el);
+}
+
+function msgClass(type){ return {ok:'bg-emerald-100 text-emerald-800', err:'bg-rose-100 text-rose-800', warn:'bg-amber-100 text-amber-800', info:'bg-sky-100 text-sky-800'}[type||'info']; }
+function setMsg(el, text, type){ el.className = 'mt-4 rounded-xl p-3 text-sm font-bold ' + msgClass(type); el.innerHTML = text; }
+
+/* 1) Sıralama */
+function initSort(a, el){
+  let order;
+  do { order = shuffle(a.sortItems.map((_,i)=>i)); } while(order.every((v,i)=>v===i));
+  el.innerHTML = `<p class="text-sm text-slate-600">Tahinli pide adımları karıştı! Okları kullanarak doğru sıraya diz, sonra kontrol et.</p>
+    <ul data-list class="mt-3 space-y-2 max-w-xl"></ul>
+    <div class="flex gap-2 mt-3"><button data-check class="px-4 py-2 rounded-xl bg-bursa-green text-white font-bold">✔ Kontrol Et</button><button data-reset class="px-4 py-2 rounded-xl bg-slate-100 font-bold">↺ Karıştır</button></div>
+    <div data-msg></div>`;
+  const list = $('[data-list]', el), msg = $('[data-msg]', el);
+  const draw = (check) => {
+    list.innerHTML = order.map((v,k)=>`
+      <li class="flex items-center gap-2 rounded-xl border-2 p-2 ${check ? (v===k?'border-emerald-400 bg-emerald-50':'border-rose-300 bg-rose-50') : 'border-slate-200 bg-white'}">
+        <span class="w-7 h-7 rounded-lg bg-bursa-dark text-white grid place-items-center text-xs font-bold">${k+1}</span>
+        <span class="flex-1 text-sm font-semibold">${a.sortItems[v]}</span>
+        <button data-up="${k}" class="w-8 h-8 rounded-lg bg-slate-100 hover:bg-slate-200" aria-label="Yukarı">▲</button>
+        <button data-down="${k}" class="w-8 h-8 rounded-lg bg-slate-100 hover:bg-slate-200" aria-label="Aşağı">▼</button>
+      </li>`).join('');
+  };
+  list.addEventListener('click', e => {
+    const up = e.target.closest('[data-up]'), dn = e.target.closest('[data-down]');
+    if(up){ const k=+up.dataset.up; if(k>0)[order[k-1],order[k]]=[order[k],order[k-1]]; }
+    if(dn){ const k=+dn.dataset.down; if(k<order.length-1)[order[k+1],order[k]]=[order[k],order[k+1]]; }
+    if(up||dn){ draw(false); msg.innerHTML=''; msg.className=''; }
+  });
+  $('[data-check]', el).onclick = () => {
+    draw(true);
+    const c = order.filter((v,i)=>v===i).length;
+    c===order.length ? setMsg(msg,'🎉 Mükemmel! Tahinli pide fırından çıktı. Algoritman doğru sırada!','ok')
+                     : setMsg(msg,`${c}/${order.length} adım doğru yerde. Kırmızı adımlarda hata ayıkla! 🐞`,'warn');
+  };
+  $('[data-reset]', el).onclick = () => { order = shuffle(order); draw(false); msg.innerHTML=''; msg.className=''; };
+  draw(false);
+}
+
+/* 2) Izgara / Rota oyunu */
+function gridGame(el, map, icons, successText){
+  const rows = map.length, cols = map[0].length;
+  let start;
+  map.forEach((r,y)=>[...r].forEach((c,x)=>{ if(c==='S') start={x,y}; }));
+  const D = {U:[0,-1,'↑'], R:[1,0,'→'], D:[0,1,'↓'], L:[-1,0,'←']};
+  let prog = [], pos = {...start}, trail = new Set(), running = false;
+  el.innerHTML = `
+    <div class="grid md:grid-cols-2 gap-6 items-start">
+      <div data-board class="grid gap-1 w-full max-w-sm mx-auto" style="grid-template-columns:repeat(${cols},1fr)"></div>
+      <div>
+        <p class="text-sm text-slate-600">Yön kartlarına tıklayarak KodBot'un programını yaz, sonra <b>Çalıştır</b>!</p>
+        <div class="grid grid-cols-4 gap-2 mt-3 max-w-xs">
+          ${Object.entries(D).map(([k,v])=>`<button data-cmd="${k}" class="h-14 rounded-xl bg-bursa-green text-white text-2xl font-extrabold shadow hover:scale-105 transition">${v[2]}</button>`).join('')}
+        </div>
+        <div class="mt-3 text-xs font-bold text-slate-500">PROGRAM (<span data-count>0</span> komut)</div>
+        <div data-prog class="mt-1 min-h-[52px] rounded-xl border-2 border-dashed border-slate-300 p-2 flex flex-wrap gap-1"></div>
+        <div class="flex flex-wrap gap-2 mt-3">
+          <button data-run class="px-4 py-2 rounded-xl bg-bursa-gold text-bursa-dark font-extrabold">▶ Çalıştır</button>
+          <button data-undo class="px-4 py-2 rounded-xl bg-slate-100 font-bold">⌫ Geri Al</button>
+          <button data-clear class="px-4 py-2 rounded-xl bg-slate-100 font-bold">🗑 Temizle</button>
+        </div>
+        <div data-msg></div>
+      </div>
+    </div>`;
+  const board=$('[data-board]',el), progEl=$('[data-prog]',el), msg=$('[data-msg]',el);
+  const draw = () => {
+    let h='';
+    for(let y=0;y<rows;y++) for(let x=0;x<cols;x++){
+      const c = map[y][x];
+      const here = pos.x===x && pos.y===y;
+      const cls = c==='#'?'wall':(c==='T'?'goal':(trail.has(x+','+y)?'trail':''));
+      h += `<div class="gcell ${cls}">${here?'🤖':(c==='#'||c==='T'?icons[c]:(c==='S'?'🟩':''))}</div>`;
+    }
+    board.innerHTML = h;
+  };
+  const drawProg = (active=-1) => {
+    progEl.innerHTML = prog.length ? prog.map((p,i)=>`<span class="w-9 h-9 rounded-lg grid place-items-center font-extrabold ${i===active?'bg-bursa-gold text-bursa-dark scale-110':'bg-bursa-dark text-white'} transition">${D[p][2]}</span>`).join('') : '<span class="text-xs text-slate-400 p-2">Henüz komut yok…</span>';
+    $('[data-count]',el).textContent = prog.length;
+  };
+  const reset = () => { pos={...start}; trail=new Set(); draw(); };
+  $$('[data-cmd]',el).forEach(b=>b.onclick=()=>{ if(running||prog.length>=40) return; prog.push(b.dataset.cmd); drawProg(); });
+  $('[data-undo]',el).onclick=()=>{ if(running) return; prog.pop(); drawProg(); };
+  $('[data-clear]',el).onclick=()=>{ if(running) return; prog=[]; drawProg(); reset(); msg.className=''; msg.innerHTML=''; };
+  $('[data-run]',el).onclick=async()=>{
+    if(running) return;
+    if(!prog.length){ setMsg(msg,'Önce bir program yazmalısın! 🙂','warn'); return; }
+    running=true; reset(); setMsg(msg,'⚙️ Program çalışıyor…','info');
+    for(let i=0;i<prog.length;i++){
+      drawProg(i); await sleep(450);
+      const [dx,dy] = D[prog[i]]; const nx=pos.x+dx, ny=pos.y+dy;
+      if(nx<0||ny<0||nx>=cols||ny>=rows){ setMsg(msg,`🐞 ${i+1}. komutta KodBot haritanın dışına çıkmaya çalıştı! Hata ayıkla.`,'err'); running=false; return; }
+      if(map[ny][nx]==='#'){ setMsg(msg,`🐞 ${i+1}. komutta KodBot engele çarptı (${icons['#']}). Hata ayıkla.`,'err'); running=false; return; }
+      trail.add(pos.x+','+pos.y); pos={x:nx,y:ny}; draw();
+      if(map[ny][nx]==='T'){ setMsg(msg,`${successText} <br><span class="font-normal">Kullanılan komut: ${i+1}</span>`,'ok'); running=false; drawProg(); return; }
+    }
+    setMsg(msg,'Program bitti ama KodBot hedefe ulaşamadı. Algoritmanı gözden geçir! 🔍','warn'); running=false; drawProg();
+  };
+  draw(); drawProg();
+}
+function initGrid(a, el){ gridGame(el, a.map, a.icons, a.success); }
+
+/* 3) Hata avı */
+function initBug(a, el){
+  el.innerHTML = `<p class="text-sm text-slate-600">Kestane şekeri paketleme robotunun algoritmasında bir <b>hata (bug)</b> var. Hatalı adıma tıkla!</p>
+    <div class="grid md:grid-cols-2 gap-6 mt-3 items-center">
+      <ol data-steps class="space-y-2"></ol>
+      <div class="text-center"><div class="text-7xl" data-box>📦</div><p class="text-xs text-slate-500 mt-2">Kestane Şekeri Paketleme Bandı</p></div>
+    </div><div data-msg></div>`;
+  const ol=$('[data-steps]',el), msg=$('[data-msg]',el);
+  ol.innerHTML = a.bugSteps.map((s,i)=>`<li><button data-i="${i}" class="w-full text-left rounded-xl border-2 border-slate-200 bg-white hover:border-bursa-gold p-3 text-sm font-semibold flex gap-3"><span class="w-6 h-6 rounded-md bg-bursa-dark text-white grid place-items-center text-xs">${i+1}</span>${s}</button></li>`).join('');
+  ol.addEventListener('click', e => {
+    const b = e.target.closest('[data-i]'); if(!b) return;
+    const i = +b.dataset.i;
+    if(i===a.bugIndex){
+      b.classList.add('!border-rose-400','!bg-rose-50');
+      setMsg(msg,'🐞 '+a.bugExplain,'ok'); $('[data-box]',el).textContent='🎁';
+    } else {
+      b.classList.add('!border-emerald-300','!bg-emerald-50');
+      setMsg(msg,`${i+1}. adım doğru görünüyor. Adımları sırayla zihninde çalıştır ve tekrar dene!`,'warn');
+    }
+  });
+}
+
+/* 4) Hava durumu – koşullar */
+function initWeather(a, el){
+  const W = {
+    kar:{i:'❄️',n:'Karlı',act:'Kayak takımını al ve kayak yap ⛷️',line:0},
+    gunes:{i:'☀️',n:'Güneşli',act:'Güneş gözlüğünü tak, yürüyüşe çık 🕶️',line:1},
+    yagmur:{i:'🌧️',n:'Yağmurlu',act:'Şemsiyeni aç ☂️',line:2},
+    sis:{i:'🌫️',n:'Sisli',act:'Fenerini al ve teleferikte bekle 🔦',line:3}
+  };
+  el.innerHTML = `<div class="grid md:grid-cols-2 gap-6">
+    <div>
+      <p class="text-sm text-slate-600">Uludağ'ın havasını seç, KodBot'un hangi koşulu çalıştırdığını gör.</p>
+      <div class="grid grid-cols-2 gap-2 mt-3">${Object.entries(W).map(([k,w])=>`<button data-w="${k}" class="rounded-2xl border-2 border-slate-200 bg-white p-3 font-bold hover:border-bursa-tile"><span class="text-3xl">${w.i}</span><br>${w.n}</button>`).join('')}</div>
+      <label class="block mt-4 text-sm font-bold">🌡️ Sıcaklık: <span data-tval>-5</span>°C</label>
+      <input data-temp type="range" min="-15" max="25" value="-5" class="w-full accent-sky-600">
+      <div data-msg></div>
+    </div>
+    <div class="code" data-code></div>
+  </div>`;
+  let cur=null;
+  const render = () => {
+    const t = +$('[data-temp]',el).value; $('[data-tval]',el).textContent = t;
+    const hl = (cond, txt) => cond ? `<span style="background:#E9A23B;color:#0B3B36;border-radius:4px;padding:0 4px">${txt}</span>` : txt;
+    const L = cur ? W[cur].line : -1;
+    $('[data-code]',el).innerHTML =
+`<span class="k">EĞER</span> hava == "Karlı" <span class="k">İSE</span>
+    ${hl(L===0,'Kayak takımını al')}
+<span class="k">DEĞİLSE EĞER</span> hava == "Güneşli" <span class="k">İSE</span>
+    ${hl(L===1,'Güneş gözlüğünü tak')}
+<span class="k">DEĞİLSE EĞER</span> hava == "Yağmurlu" <span class="k">İSE</span>
+    ${hl(L===2,'Şemsiyeni aç')}
+<span class="k">DEĞİLSE</span>
+    ${hl(L===3,'Fenerini al, teleferikte bekle')}
+<span class="k">SON</span>
+
+<span class="c">// İç içe koşul</span>
+<span class="k">EĞER</span> sıcaklık &lt; 0 <span class="k">İSE</span>
+    ${hl(cur && t<0,'Kalın montunu giy 🧥')}
+<span class="k">SON</span>`;
+    const msg=$('[data-msg]',el);
+    if(cur) setMsg(msg, `${W[cur].i} Hava ${W[cur].n.toLocaleLowerCase('tr-TR')}, sıcaklık ${t}°C → KodBot: ${W[cur].act}${t<0?' + Kalın montunu giy 🧥':''}`,'info');
+  };
+  $$('[data-w]',el).forEach(b=>b.onclick=()=>{ cur=b.dataset.w; $$('[data-w]',el).forEach(x=>x.classList.remove('!border-bursa-tile','!bg-sky-50')); b.classList.add('!border-bursa-tile','!bg-sky-50'); render(); });
+  $('[data-temp]',el).oninput = render;
+  render();
+}
+
+/* 5) Döngü */
+function initLoop(a, el){
+  el.innerHTML = `<div class="grid md:grid-cols-2 gap-6 items-end">
+    <div>
+      <p class="text-sm text-slate-600">Tophane yokuşunda kaç basamak var? Döngünün tekrar sayısını değiştir ve <b>Çalıştır</b>.</p>
+      <label class="block mt-3 text-sm font-bold">Tekrar sayısı: <span data-nval>6</span></label>
+      <input data-n type="range" min="1" max="12" value="6" class="w-full accent-teal-600">
+      <div class="code mt-3" data-code></div>
+      <button data-run class="mt-3 px-4 py-2 rounded-xl bg-bursa-gold text-bursa-dark font-extrabold">▶ Çalıştır</button>
+      <div data-msg></div>
+    </div>
+    <div class="relative h-64 rounded-2xl bg-gradient-to-b from-sky-100 to-emerald-50 overflow-hidden" data-scene></div>
+  </div>`;
+  const nEl=$('[data-n]',el), scene=$('[data-scene]',el), msg=$('[data-msg]',el);
+  let running=false;
+  const STEPS = 12, sw = 100/(STEPS+1);
+  const drawScene = (pos) => {
+    const n = +nEl.value;
+    let h = '';
+    for(let i=0;i<STEPS;i++){
+      h += `<div style="position:absolute;left:${i*sw}%;bottom:0;width:${sw+0.2}%;height:${(i+1)*7}%;background:${i<n?'#C9B79C':'#E7DED0'};border-top:3px solid #8B4A2B"></div>`;
+    }
+    h += `<div style="position:absolute;left:${(n)*sw}%;bottom:${(n)*7}%;font-size:2rem;transform:translateX(-5%)">🕰️</div>`;
+    h += `<div style="position:absolute;left:${pos*sw}%;bottom:${pos*7}%;font-size:1.9rem;transition:all .35s">🤖</div>`;
+    scene.innerHTML = h;
+  };
+  const drawCode = (k) => {
+    const n = +nEl.value; $('[data-nval]',el).textContent = n;
+    $('[data-code]',el).innerHTML = `<span class="k">TEKRARLA</span> ${n} KEZ   <span class="c">// ${k!=null?'tur '+k+'/'+n:''}</span>
+    Bir basamak çık
+<span class="k">SON</span>
+Kuleyi fotoğrafla 📸
+
+<span class="c">// Döngüsüz yazsaydık: ${n+1} satır
+// Döngüyle: 4 satır</span>`;
+  };
+  nEl.oninput = () => { if(running) return; drawCode(); drawScene(0); msg.className=''; msg.innerHTML=''; };
+  $('[data-run]',el).onclick = async () => {
+    if(running) return; running=true;
+    const n=+nEl.value;
+    for(let k=1;k<=n;k++){ drawCode(k); drawScene(k); await sleep(450); }
+    setMsg(msg,`🎉 Döngü ${n} kez çalıştı, KodBot Saat Kulesi'ne ulaştı! Döngü sayesinde ${n} satır yerine tek bir komut yazdık.`,'ok');
+    running=false;
+  };
+  drawCode(); drawScene(0);
+}
+
+/* 6) İkili sistem */
+function initBinary(a, el){
+  const vals=[16,8,4,2,1]; let on=[0,0,0,0,0];
+  el.innerHTML = `<div class="grid lg:grid-cols-2 gap-8">
+    <div>
+      <p class="text-sm text-slate-600">Kartlara tıklayarak aç/kapat. Hedef: <b>Bursa'nın plaka kodu 16</b>'yı oluştur!</p>
+      <div data-cards class="flex gap-2 mt-3 flex-wrap"></div>
+      <div class="mt-4 flex items-center gap-4 flex-wrap">
+        <div class="rounded-2xl bg-bursa-dark text-bursa-mint font-mono text-2xl px-4 py-2" data-bin>00000</div>
+        <div class="text-2xl font-extrabold">= <span data-dec>0</span></div>
+      </div>
+      <div class="flex flex-wrap gap-2 mt-3 text-sm" data-targets></div>
+      <div data-msg></div>
+    </div>
+    <div>
+      <p class="text-sm text-slate-600">🔐 <b>Şifre Çözücü:</b> 5'li ikili kodları boşlukla ayırarak yaz (A=1 … Z=29).</p>
+      <input data-in class="mt-3 w-full rounded-xl border-2 border-slate-200 p-3 font-mono" value="${encodeWord('KOZA')}">
+      <div class="mt-3 text-3xl font-display font-extrabold tracking-widest text-bursa-chestnut" data-out></div>
+      <p class="text-sm text-slate-600 mt-4">✍️ <b>Şifrele:</b> Bir kelime yaz.</p>
+      <input data-word class="mt-2 w-full rounded-xl border-2 border-slate-200 p-3" value="Ulu Cami" maxlength="20">
+      <div class="mt-2 font-mono text-sm break-all bg-slate-50 rounded-xl p-3" data-enc></div>
+    </div>
+  </div>`;
+  const cards=$('[data-cards]',el), msg=$('[data-msg]',el);
+  const draw = () => {
+    cards.innerHTML = vals.map((v,i)=>`<div class="bcard ${on[i]?'on':'off'}" data-i="${i}">${on[i]?`<div class="dots">${'<span class="dot"></span>'.repeat(v)}</div><b class="mt-1">${v}</b>`:'<b class="text-bursa-mint text-xl">0</b>'}</div>`).join('');
+    const dec = vals.reduce((s,v,i)=>s+v*on[i],0);
+    $('[data-bin]',el).textContent = on.join('');
+    $('[data-dec]',el).textContent = dec;
+    return dec;
+  };
+  cards.addEventListener('click', e => {
+    const c = e.target.closest('[data-i]'); if(!c) return;
+    on[+c.dataset.i] ^= 1; const d = draw();
+    if(d===16) setMsg(msg,'🎉 10000 = 16 → Bursa! Yalnızca 16\'lık kart açık.','ok');
+    else { msg.className=''; msg.innerHTML=''; }
+  });
+  const T = [['Bursa',16],['Balıkesir',10],['Bilecik',11],['Ulu Cami kubbesi',20],['En büyük',31]];
+  $('[data-targets]',el).innerHTML = T.map(([n,v])=>`<button data-t="${v}" class="px-3 py-1.5 rounded-full bg-violet-50 text-violet-700 font-bold border border-violet-200">${n}: ${v}</button>`).join('');
+  $$('[data-t]',el).forEach(b=>b.onclick=()=>{ const v=+b.dataset.t; on=toBin(v).split('').map(Number); draw(); setMsg(msg,`${v} = ${toBin(v)} (${vals.filter((x,i)=>on[i]).join(' + ')})`,'info'); });
+  const decode = () => {
+    const out = $('[data-in]',el).value.trim().split(/\s+/).filter(Boolean).map(b => { const n=parseInt(b,2); return (/^[01]+$/.test(b) && n>=1 && n<=29) ? ALFABE[n-1] : '?'; }).join('');
+    $('[data-out]',el).textContent = out || '…';
+  };
+  const enc = () => { $('[data-enc]',el).textContent = $('[data-word]',el).value.split(' ').map(encodeWord).join('  /  '); };
+  $('[data-in]',el).oninput = decode; $('[data-word]',el).oninput = enc;
+  draw(); decode(); enc();
+}
+
+/* 7) Labirent + Sudoku */
+const SUDOKU_SYM = ['', '🌷', '🔷', '⭐', '🍃'];
+const SUDOKU_GIVEN = [[1,0,0,4],[0,4,1,0],[2,0,0,3],[0,3,2,0]];
+const SUDOKU_SOL   = [[1,2,3,4],[3,4,1,2],[2,1,4,3],[4,3,2,1]];
+function initMazeSudoku(a, el){
+  el.innerHTML = `
+    <h3 class="font-display font-bold text-lg">🧶 A) Koza Han Labirenti</h3>
+    <div data-maze class="mt-3"></div>
+    <hr class="my-8 border-slate-200">
+    <h3 class="font-display font-bold text-lg">🔷 B) Yeşil Türbe Çini Sudokusu</h3>
+    <div class="grid md:grid-cols-2 gap-6 mt-3 items-center">
+      <div data-sudoku class="sudoku w-full"></div>
+      <div>
+        <p class="text-sm text-slate-600">Boş karelere tıklayarak motifleri değiştir. Her <b>satır</b>, <b>sütun</b> ve <b>2×2 bölge</b>de her motif yalnızca bir kez bulunmalı.</p>
+        <div class="flex gap-3 mt-3 text-sm font-bold flex-wrap">${[1,2,3,4].map(i=>`<span class="chip bg-sky-50 text-bursa-tile">${SUDOKU_SYM[i]} = ${i}</span>`).join('')}</div>
+        <div class="flex gap-2 mt-4"><button data-check class="px-4 py-2 rounded-xl bg-bursa-tile text-white font-bold">✔ Kontrol Et</button><button data-reset class="px-4 py-2 rounded-xl bg-slate-100 font-bold">↺ Sıfırla</button></div>
+        <div data-msg></div>
+      </div>
+    </div>`;
+  gridGame($('[data-maze]',el), a.map, a.icons, a.success);
+  let board = SUDOKU_GIVEN.map(r=>[...r]);
+  const sEl=$('[data-sudoku]',el), msg=$('[data-msg]',el);
+  const draw = (check) => {
+    sEl.innerHTML = board.flat().map((v,i)=>{
+      const r=Math.floor(i/4), c=i%4, given=SUDOKU_GIVEN[r][c]>0;
+      let cls = given?'given':'';
+      if(check && !given && v) cls = v===SUDOKU_SOL[r][c]?'ok':'bad';
+      return `<div class="${cls}" data-r="${r}" data-c="${c}">${SUDOKU_SYM[v]}</div>`;
+    }).join('');
+  };
+  sEl.addEventListener('click', e => {
+    const d = e.target.closest('[data-r]'); if(!d) return;
+    const r=+d.dataset.r, c=+d.dataset.c; if(SUDOKU_GIVEN[r][c]) return;
+    board[r][c] = (board[r][c]+1)%5; draw(false); msg.className=''; msg.innerHTML='';
+  });
+  $('[data-check]',el).onclick = () => {
+    draw(true);
+    const empty = board.flat().filter(v=>!v).length;
+    const wrong = board.flat().filter((v,i)=>v && v!==SUDOKU_SOL[Math.floor(i/4)][i%4]).length;
+    if(!empty && !wrong) setMsg(msg,`🎉 Tebrikler! Yeşil Türbe çinileri tamamlandı. İlk satırın kodu: ${SUDOKU_SOL[0].join('-')}`,'ok');
+    else setMsg(msg,`${wrong} hatalı, ${empty} boş kare var. Kırmızı kareleri tekrar düşün!`,'warn');
+  };
+  $('[data-reset]',el).onclick = () => { board = SUDOKU_GIVEN.map(r=>[...r]); draw(false); msg.className=''; msg.innerHTML=''; };
+  draw(false);
+}
+
+/* =========================================================
+   YÖNLENDİRME (SPA)
+   ========================================================= */
+const PAGES = ['ana','algoritma','ozellikler','yapilar','akis','etkinlikler','detay'];
+function route(){
+  const h = (location.hash || '#/ana').replace(/^#\/?/, '');
+  let page = h || 'ana';
+  if(page.startsWith('etkinlik/')){
+    renderActivity(parseInt(page.split('/')[1],10));
+    page = 'detay';
+  }
+  if(!PAGES.includes(page)) page = 'ana';
+  PAGES.forEach(p => {
+    const s = document.getElementById('page-'+p);
+    s.classList.toggle('hidden', p!==page);
+    if(p===page){ s.style.animation='none'; void s.offsetWidth; s.style.animation=''; }
+  });
+  const navKey = page==='detay' ? 'etkinlikler' : page;
+  $$('[data-nav]').forEach(a => a.classList.toggle('active', a.dataset.nav===navKey));
+  $('#mobileMenu').classList.add('hidden');
+  window.scrollTo(0, 0);
+}
+
+renderStatic();
+window.addEventListener('hashchange', route);
+route();
+</script>
+</body>
+</html>
